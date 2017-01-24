@@ -4,6 +4,21 @@ var pegColourNames = ["Yellow", "Red", "Green", "Blue", "Black", "White", "Orang
 var pegColourRGBs = ["#ffff00", "#ff0000", "#00ff00", "#0000ff", "#000000", "#ffffff", "#ff8800", "#cc00cc", "#00ffff", "#ff00ff", "#994400", "#ffaaaa"];
 
 $(document).ready(function () {
+// Fill menus
+	var widthMenu = $("#width-menu");
+	var colourMenu = $("#colour-menu");
+	var instButton = $("#open-instructions");
+	
+	for (var i = 2; i <= 16; i++) {
+		widthMenu.append("<option value='" + i + "'" + widthDefault(i) + ">" + i + "</option>");
+	}
+
+	for (var i = 2; i <= 12; i++) {
+		colourMenu.append("<option value='" + i + "'" + colourDefault(i) + ">" + i + "</option>");
+	}
+
+	instButton.on("click", showInst);
+
 	var combination = createNewCombo (gameWidth, gameColours);
 	var nextGuess = [];
 	for (var i = 0; i < gameWidth; i++) {
@@ -26,6 +41,19 @@ $(document).ready(function () {
 		});
 	}
 });
+
+function widthDefault (width)	{
+	if (width === gameWidth) return (" selected");
+	return;
+}
+function colourDefault (colour)	{
+	if (colour === gameColours) return (" selected");
+	return;
+}
+
+function showInst () {
+	
+}
 
 function createNewCombo	(width, colours)	{
 	var combination = [];

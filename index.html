@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title>Codebreaker</title>
 	<script type="text/javascript" src="Assets/Scripts/jquery-3.1.1.min.js"></script>
 	<script type="text/javascript" src="Assets/Scripts/scripts.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -9,16 +9,45 @@
 	<link rel="stylesheet" type="text/css" href="Assets/Styles/css/styles.css">
 </head>
 <body class="container-fluid">
-	<div id="combination-row">
-		<button type="submit">New game</button>
-
-	</div>
+	<div id="page-header" class="fixed-bar">
+		<div class="row">
+			<div class="col-sm-3 col-xs-6">
+				<p>Select number of pegs in the combination:</p>
+				<select id="width-menu">
+				</select>
+			</div>
+			<div class="col-sm-3 col-xs-6">
+				<p>Select number of available colours:</p>
+				<select id="colour-menu"></select>
+			</div>
+			<div class="col-sm-6 col-xs-12">
+				<button id="open-instructions">Instructions</button>
+				<button type="submit">New game</button>
+			</div>
+		</div>
+	</div>	<!-- end of page-header -->
 	<div id="previous-guesses">
 		
 	</div>
-	<div id="current-guess">
+	<div id="page-footer" class="fixed-bar">
 		
 		<button id="submit-guess">Submit guess</button>
 	</div>
+	<div class="instruc-modal">
+		<div class="instruc-head">
+			<div class="instruc-title">
+				<h2>Instructions</h2>
+			</div>
+			<div class="instruc-close">
+				<button id="instruc-close-button">&times;</button>
+			</div>
+		</div>
+		<div class="instruc-body">
+			<p>The code is a sequence of colours.  Try to solve the code based on the results of each guess.</p>
+			<p>Choose the length of the code and the number of possible colours for each square from the menus in the upper left corner of your screen.  Then, click <span class="button-name">New Game</span> to create the code and begin guessing.</p>
+			<p>Enter your guess by clicking the coloured squares in the row at the bottom of the screen.  Once the row above is filled, click <span class="button-name">Submit Guess</span> to find out how close you guess is to the solution.</p>
+			<p>Each guess you submit will be shown from the top of the screen, with the most <span class="emph">recent</span> guess shown <span class="emph">highest</span>.  For each <span class="emph">correct</span> colour in the <span class="emph">correct</span> spot in the sequence, a black box will be displayed to the left of your guess.  For each <span class="emph">correct</span> colour in the <span class="emph">incorrect</span> order, a white box will be displayed.</p>
+		</div>
+	</div>	
 </body>
 </html>
