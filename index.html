@@ -9,14 +9,28 @@
 	<link rel="stylesheet" type="text/css" href="Assets/Styles/css/styles.css">
 </head>
 <body class="container-fluid">
-	<div id="combination-row">
-		<button type="submit">New game</button>
-
-	</div>
+	<div id="page-header" class="fixed-bar">
+		<div class="row">
+			<div class="col-sm-3 col-xs-6">
+				<p>Select number of pegs in the combination:</p>
+				<select id="width-menu">
+					<option value=""></option>
+				</select>
+			</div>
+			<div class="col-sm-3 col-xs-6">
+				<p>Select number of available colours:</p>
+				<select id="colour-menu"></select>
+			</div>
+			<div class="col-sm-6 col-xs-12">
+				<button id="open-instructions">Instructions</button>
+				<button type="submit">New game</button>
+			</div>
+		</div>
+	</div>	<!-- end of page-header -->
 	<div id="previous-guesses">
 		
 	</div>
-	<div id="current-guess">
+	<div id="page-footer" class="fixed-bar">
 		
 		<button id="submit-guess">Submit guess</button>
 	</div>

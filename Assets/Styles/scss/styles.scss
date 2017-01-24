@@ -1,0 +1,22 @@
+$fixed-bk: #F0DC82;
+$page-bk: #F5DEB3;
+
+.fixed-bar	{
+	position: fixed;
+	left: 0;
+	width: 100%;
+	padding: 12px;
+	background-color: $fixed-bk;
+}
+
+#page-header	{
+	top: 0;
+}
+
+#page-footer	{
+	bottom: 0;
+}
+
+#previous-guesses	{
+	margin-top: 100px;
+}
