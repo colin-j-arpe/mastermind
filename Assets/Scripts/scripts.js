@@ -38,15 +38,26 @@ $(document).ready(function () {
 		console.log("yup");
 		console.log(widthMenu.val());
 		console.log(colourMenu.val());
-		// createBlankGuess
+		createBlankGuess(widthMenu.val());
 		createColourPicker(colourMenu.val());
 		footer.style.display = "block";
+	}
+
+	function createBlankGuess (num)	{
+		guessRow.html("");
+		for (var i = 0; i < num; i++) {
+			guessRow.append("<div class='peg guess-peg'></div>");
+		}
 	}
 
 	function createColourPicker (num)	{
 		pickRow.html("");
 		for (var i = 0; i < num; i++) {
-			pickRow.append("<div class='peg' style='background-color: " + pegColourRGBs[i] + "'></div>");
+			pickRow.append("<div class='peg pick-peg' style='background-color: " + pegColourRGBs[i] + "'></div>");
+		}
+		var pickPegs = $(".pick-peg")
+		for (let j = 0; j < pickPegs.length; j++) {
+			pickPegs[j]
 		}
 	}
 

@@ -3,7 +3,7 @@ $page-bk: #F5DEB3;
 $inst-bdr: #3D2B1F;
 $inst-ht: 350px;
 $inst-wd: 600px;
-$peg-size: 24px;
+$peg-size: 36px;
 
 body	{
 	background-color: $page-bk;
@@ -15,6 +15,7 @@ body	{
 	height: $peg-size;
 	border: 4px solid $inst-bdr;
 	margin: 0 6px;
+	background-color: #bbbbbb;
 }
 
 .fixed-bar	{
@@ -32,6 +33,15 @@ body	{
 #page-footer	{
 	display: none;
 	bottom: 0;
+
+	#pending-guess	{
+		margin-bottom: 12px;
+	}
+	#submit-guess	{
+		position: absolute;
+		right: 12px;
+		bottom: 12px;
+	}
 }
 
 #previous-guesses	{
