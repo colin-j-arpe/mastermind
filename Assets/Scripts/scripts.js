@@ -17,10 +17,7 @@ $(document).ready(function () {
 		colourMenu.append("<option value='" + i + "'" + colourDefault(i) + ">" + i + "</option>");
 	}
 
-	instButton.on("click", function () {
-console.log("width is " + widthMenu.val());
-console.log("colours is " + colourMenu.val());
-	});
+	instButton.on("click", showInst);
 
 	var combination = createNewCombo (gameWidth, gameColours);
 	var nextGuess = [];
@@ -46,12 +43,16 @@ console.log("colours is " + colourMenu.val());
 });
 
 function widthDefault (width)	{
-	if (width === gameWidth) return (" selected ");
+	if (width === gameWidth) return (" selected");
 	return;
 }
 function colourDefault (colour)	{
-	if (colour === gameColours) return (" selected ");
+	if (colour === gameColours) return (" selected");
 	return;
+}
+
+function showInst () {
+	
 }
 
 function createNewCombo	(width, colours)	{
