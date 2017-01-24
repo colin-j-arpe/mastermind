@@ -3,9 +3,18 @@ $page-bk: #F5DEB3;
 $inst-bdr: #3D2B1F;
 $inst-ht: 350px;
 $inst-wd: 600px;
+$peg-size: 24px;
 
 body	{
 	background-color: $page-bk;
+}
+
+.peg 	{
+	display: inline-flex;
+	width: $peg-size;
+	height: $peg-size;
+	border: 4px solid $inst-bdr;
+	margin: 0 6px;
 }
 
 .fixed-bar	{
@@ -21,6 +30,7 @@ body	{
 }
 
 #page-footer	{
+	display: none;
 	bottom: 0;
 }
 

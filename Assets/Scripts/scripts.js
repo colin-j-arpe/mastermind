@@ -1,31 +1,54 @@
 var gameWidth = 4;
 var gameColours = 6;
 var pegColourNames = ["Yellow", "Red", "Green", "Blue", "Black", "White", "Orange", "Purple", "Cyan", "Magenta","Brown", "Pink"];
-var pegColourRGBs = ["#ffff00", "#ff0000", "#00ff00", "#0000ff", "#000000", "#ffffff", "#ff8800", "#cc00cc", "#00ffff", "#ff00ff", "#994400", "#ffaaaa"];
+var pegColourRGBs = ["#ffff00", "#ff0000", "#00ff00", "#0000ff", "#000000", "#ffffff", "#ff8800", "#880088", "#00ffff", "#ff00ff", "#994400", "#ffaaaa"];
 
 $(document).ready(function () {
-// Fill menus
+// DOM referents
 	var widthMenu = $("#width-menu");
 	var colourMenu = $("#colour-menu");
 	var instModal = $("#instruc-modal")[0];
 	var instButton = $("#open-instructions");
 	var instClose = $("#instruc-close-button");
-	var newButton = 
-	
+	var newButton = $("#new-game-button");
+	var footer = $("#page-footer")[0];
+	var guessRow = $("#pending-guess");
+	var pickRow = $("#available-colours");
+
+// Fill menus
 	for (var i = 2; i <= 16; i++) {
 		widthMenu.append("<option value='" + i + "'" + widthDefault(i) + ">" + i + "</option>");
 	}
-
 	for (var i = 2; i <= 12; i++) {
 		colourMenu.append("<option value='" + i + "'" + colourDefault(i) + ">" + i + "</option>");
 	}
 
+// Show/hide instructions modal
 	instButton.on("click", function () {
 		instModal.style.display = "block";
 	});
 	instClose.on("click", function () {
 		instModal.style.display = "none";
 	});
+
+// Start game
+	newButton.on("click", newGame);
+
+	function newGame ()	{
+		console.log("yup");
+		console.log(widthMenu.val());
+		console.log(colourMenu.val());
+		// createBlankGuess
+		createColourPicker(colourMenu.val());
+		footer.style.display = "block";
+	}
+
+	function createColourPicker (num)	{
+		pickRow.html("");
+		for (var i = 0; i < num; i++) {
+			pickRow.append("<div class='peg' style='background-color: " + pegColourRGBs[i] + "'></div>");
+		}
+	}
 
 	var combination = createNewCombo (gameWidth, gameColours);
 	var nextGuess = [];
