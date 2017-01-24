@@ -12,7 +12,7 @@
 	<div id="page-header" class="fixed-bar">
 		<div class="row">
 			<div class="col-sm-3 col-xs-6">
-				<p>Select number of pegs in the combination:</p>
+				<p>Select number of boxes in the combination:</p>
 				<select id="width-menu">
 				</select>
 			</div>
@@ -22,7 +22,7 @@
 			</div>
 			<div class="col-sm-6 col-xs-12">
 				<button id="open-instructions">Instructions</button>
-				<button type="submit">New game</button>
+				<button id="new-game-button">Start game</button>
 			</div>
 		</div>
 	</div>	<!-- end of page-header -->
@@ -31,7 +31,7 @@
 	</div>
 	<div id="page-footer" class="fixed-bar">
 		
-		<button id="submit-guess">Submit guess</button>
+		<button id="submit-guess">Submit Guess</button>
 	</div>
 	<div id="instruc-modal">
 		<div id="instruc-head">
@@ -42,10 +42,10 @@
 		</div>
 		<div id="instruc-body">
 			<p>The code is a sequence of colours.  Try to solve the code based on the results of each guess.</p>
-			<p>Choose the length of the code and the number of possible colours for each square from the menus in the upper left corner of your screen.  Then, click <span class="button-name">New Game</span> to create the code and begin guessing.</p>
+			<p>Choose the length of the code and the number of possible colours for each square from the menus in the upper left corner of your screen.  Then, click <span class="button-name">Start Game</span> to create the code and begin guessing.</p>
 			<p>Enter your guess by clicking the coloured squares in the row at the bottom of the screen.  Once the row above is filled, click <span class="button-name">Submit Guess</span> to find out how close you guess is to the solution.</p>
 			<p>Each guess you submit will be shown from the top of the screen, with the most <span class="emph">recent</span> guess shown <span class="emph">highest</span>.  For each <span class="emph">correct</span> colour in the <span class="emph">correct</span> spot in the sequence, a black box will be displayed to the left of your guess.  For each <span class="emph">correct</span> colour in the <span class="emph">incorrect</span> order, a white box will be displayed.</p>
 		</div>
-	</div>	
+	</div>	<!-- end of instruc-modal -->
 </body>
 </html>

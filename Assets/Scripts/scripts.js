@@ -10,6 +10,7 @@ $(document).ready(function () {
 	var instModal = $("#instruc-modal")[0];
 	var instButton = $("#open-instructions");
 	var instClose = $("#instruc-close-button");
+	var newButton = 
 	
 	for (var i = 2; i <= 16; i++) {
 		widthMenu.append("<option value='" + i + "'" + widthDefault(i) + ">" + i + "</option>");
@@ -57,13 +58,6 @@ function colourDefault (colour)	{
 	if (colour === gameColours) return (" selected");
 	return;
 }
-
-// function showInst () {
-// 	instModal.style.display = "block";
-// }
-// function closeInst () {
-// 	instModal.style.display = "none";
-// }
 
 function createNewCombo	(width, colours)	{
 	var combination = [];
