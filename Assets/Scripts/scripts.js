@@ -7,7 +7,9 @@ $(document).ready(function () {
 // Fill menus
 	var widthMenu = $("#width-menu");
 	var colourMenu = $("#colour-menu");
+	var instModal = $("#instruc-modal")[0];
 	var instButton = $("#open-instructions");
+	var instClose = $("#instruc-close-button");
 	
 	for (var i = 2; i <= 16; i++) {
 		widthMenu.append("<option value='" + i + "'" + widthDefault(i) + ">" + i + "</option>");
@@ -17,7 +19,12 @@ $(document).ready(function () {
 		colourMenu.append("<option value='" + i + "'" + colourDefault(i) + ">" + i + "</option>");
 	}
 
-	instButton.on("click", showInst);
+	instButton.on("click", function () {
+		instModal.style.display = "block";
+	});
+	instClose.on("click", function () {
+		instModal.style.display = "none";
+	});
 
 	var combination = createNewCombo (gameWidth, gameColours);
 	var nextGuess = [];
@@ -51,9 +58,12 @@ function colourDefault (colour)	{
 	return;
 }
 
-function showInst () {
-	
-}
+// function showInst () {
+// 	instModal.style.display = "block";
+// }
+// function closeInst () {
+// 	instModal.style.display = "none";
+// }
 
 function createNewCombo	(width, colours)	{
 	var combination = [];

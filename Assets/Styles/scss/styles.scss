@@ -1,5 +1,12 @@
 $fixed-bk: #F0DC82;
 $page-bk: #F5DEB3;
+$inst-bdr: #3D2B1F;
+$inst-ht: 350px;
+$inst-wd: 600px;
+
+body	{
+	background-color: $page-bk;
+}
 
 .fixed-bar	{
 	position: fixed;
@@ -22,5 +29,27 @@ $page-bk: #F5DEB3;
 }
 
 #instruc-modal	{
-	
+	display: none;
+	position: fixed;
+	height: $inst-ht;
+	width: $inst-wd;
+	top: 50%;
+	left: 50%;
+	margin-top: ($inst-ht/(-2));
+	margin-left: ($inst-wd/(-2));
+	background-color: $fixed-bk;
+	padding: 0 12px;
+	border: 2px solid $inst-bdr;
+
+	#instruc-close-button	{
+		position: absolute;
+		top: 12px;
+		right: 12px;
+	}
+	.button-name	{
+		font-weight: bold;
+	}
+	.emph	{
+		font-style: italic;
+	}
 }
