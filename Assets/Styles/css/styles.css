@@ -29,7 +29,8 @@ body {
   #page-footer #submit-guess {
     position: absolute;
     right: 12px;
-    bottom: 12px; }
+    bottom: 12px;
+    visibility: hidden; }
 
 #previous-guesses {
   margin-top: 100px; }
