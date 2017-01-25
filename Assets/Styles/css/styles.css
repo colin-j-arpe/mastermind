@@ -11,6 +11,19 @@ body {
 .guess-peg {
   background-color: #bbbbbb; }
 
+.result-peg {
+  width: 14.4px;
+  height: 14.4px;
+  border: 2px solid #3D2B1F;
+  margin: 0 4px;
+  display: inline-flex; }
+
+.black-peg {
+  background-color: #000000; }
+
+.white-peg {
+  background-color: #ffffff; }
+
 .fixed-bar {
   position: fixed;
   left: 0;
@@ -41,6 +54,12 @@ body {
     #previous-guesses .guess-number h3 {
       text-align: center;
       font-weight: bolder; }
+  #previous-guesses .guess-results {
+    display: inline-flex; }
+    #previous-guesses .guess-results .black-peg-row {
+      display: block; }
+    #previous-guesses .guess-results .white-peg-row {
+      display: block; }
 
 #instruc-modal {
   display: none;

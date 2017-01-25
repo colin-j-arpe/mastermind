@@ -21,6 +21,22 @@ body	{
 	background-color: #bbbbbb;
 }
 
+.result-peg	{
+	width: ($peg-size * 0.4);
+	height: ($peg-size * 0.4);
+	border: 2px solid $inst-bdr;
+	margin: 0 4px;
+	display: inline-flex;
+}
+
+.black-peg	{
+	background-color: #000000;
+}
+
+.white-peg	{
+	background-color: #ffffff;
+}
+
 .fixed-bar	{
 	position: fixed;
 	left: 0;
@@ -59,6 +75,16 @@ body	{
 		h3	{
 			text-align: center;
 			font-weight: bolder;
+		}
+	}
+	.guess-results	{
+		display: inline-flex;
+
+		.black-peg-row	{
+			display: block;
+		}
+		.white-peg-row	{
+			display: block;
 		}
 	}
 }

@@ -76,11 +76,26 @@ $(document).ready(function () {
 
 // Submit guess, show result
 		function submitGuess () {
-console.log("clicked");
 			pageBody.prepend("<div class='prev-guess'></div>")
 			$(".prev-guess").eq(0).append("<div class='guess-number'><h3>" + $(".prev-guess").length + "</h3></div>")
 			for (var i = 0; i < thisGame.guess.length; i++) {
 				$(".prev-guess").eq(0).append("<div class='peg' style='background-color: " + pegColourRGBs[thisGame.guess[i]] + "'></div>");
+			}
+			$(".prev-guess").eq(0).append("<div class='guess-results'></div>");
+			$(".guess-results").eq(0).append("<div class='black-peg-row'></div><div class='white-peg-row'></div>");
+				$(".black-peg-row").eq(0).append("<div class='result-peg black-peg'></div>");
+				$(".white-peg-row").eq(0).append("<div class='result-peg white-peg'></div>");
+
+			// black = thisGame.checkBlacks;
+			var black = 4;
+			for (var i = 0; i < black; i++) {
+console.log(i);
+				$(".black-peg-row").eq(0).append("<div class='result-peg black-peg'></div>");
+			}
+			// white = thisGame.checkWhites;
+			var white = 4;
+			for (var i = 0; i < white.length; i++) {
+				$(".white-peg-row").eq(0).append("<div class='result-peg white-peg'></div>");
 			}
 		}
 
