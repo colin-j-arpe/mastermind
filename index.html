@@ -33,12 +33,12 @@
 		<div id="available-colours"></div>
 		<button id="submit-guess" type="button">Submit Guess</button>
 	</div>
-	<div id="instruc-modal">
+	<div id="instruc-modal" class="modal-window">
 		<div id="instruc-head">
 			<div id="instruc-title">
 				<h2>Instructions</h2>
 			</div>
-			<button id="instruc-close-button">&times;</button>
+			<button class="close-button">&times;</button>
 		</div>
 		<div id="instruc-body">
 			<p>The code is a sequence of colours.  Try to solve the code based on the results of each guess.</p>
@@ -47,5 +47,17 @@
 			<p>Each guess you submit will be shown from the top of the screen, with the most <span class="emph">recent</span> guess shown <span class="emph">highest</span>.  For each <span class="emph">correct</span> colour in the <span class="emph">correct</span> spot in the sequence, a black box will be displayed to the left of your guess.  For each <span class="emph">correct</span> colour in the <span class="emph">incorrect</span> order, a white box will be displayed.</p>
 		</div>
 	</div>	<!-- end of instruc-modal -->
+	<div id="win-game-modal" class="modal-window">
+		<div id="win-head">
+			<div id="win-title">
+				<h2>Congratulations!</h2>
+			</div>
+			<button class="close-button">&times;</button>
+		</div>
+		<div id="win-body">
+			<p>You have successfully solved the puzzle.</p>
+			<p>Your code had <span id="win-width"></span> pegs and <span id="win-colours"></span> different colours, which could create a total of <span id="win-combos"></span> possible combinations.  You solved it in <span id="win-guesses"></span> guesses.</p>
+		</div>
+	</div>	<!-- end of win-game-modal -->
 </body>
 </html>

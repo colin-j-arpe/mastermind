@@ -19,13 +19,14 @@ $(document).ready(function () {
 	var colourMenu = $("#colour-menu");
 	var instModal = $("#instruc-modal")[0];
 	var instButton = $("#open-instructions");
-	var instClose = $("#instruc-close-button");
+	// var modalClose = $(".close-button");
 	var newButton = $("#new-game-button");
 	var pageBody = $("#previous-guesses");
 	var footer = $("#page-footer")[0];
 	var guessRow = $("#pending-guess");
 	var pickRow = $("#available-colours");
 	var guessButton = $("#submit-guess");
+	var winModal = $("#win-game-modal")[0];
 	var thisGame = new Game (0,0);
 
 // Fill menus
@@ -40,7 +41,7 @@ $(document).ready(function () {
 	instButton.on("click", function () {
 		instModal.style.display = "block";
 	});
-	instClose.on("click", function () {
+	$(".close-button").eq(0).on("click", function () {
 		instModal.style.display = "none";
 	});
 
@@ -93,6 +94,7 @@ $(document).ready(function () {
 				$(".white-peg-row").eq(0).append("<div class='result-peg white-peg'></div>");
 			}
 
+			if (results[0] === thisGame.combination.length) winGame();
 			clearGuess();
 		}
 
@@ -152,6 +154,39 @@ $(document).ready(function () {
 		thisGame.livePeg = 0;
 		thisGame.guess.fill(NaN);
 		$("#submit-guess")[0].style.visibility = "hidden";
+	}
+
+	function winGame ()	{
+		closeBoard();
+		var width = $(".guess-peg").length;
+		var colours = $(".pick-peg").length;
+		$("#win-width").append(width.toString());
+		$("#win-colours").append(colours.toString());
+		$("#win-combos").append(combinations(width, colours));
+		$("#win-guesses").append($(".prev-guess").length.toString());
+		winModal.style.display = "block";
+		$(".close-button").eq(1).on("click", function () {
+			winModal.style.display = "none";
+		});
+
+
+		function combinations (width, colours)	{
+			var total = colours;
+			for (var i = 0; i < width-1; i++) {
+				total *= colours;
+			}
+			return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		}
+
+		function closeBoard ()	{
+			clearInterval(stopBlinking);
+			$(".guess-peg").each(function() {
+				$(this).off("click");
+			});
+			$(".pick-peg").each(function() {
+				$(this).off("click");
+			});	
+		}
 	}
 
 	// var nextGuess = [];
@@ -220,16 +255,6 @@ console.log(combination);
 		return results;
 	}
 }
-
-
-// function guessMenu (colours)	{
-// 	var string = "<select class='guess-menu'><option disabled>Select colour...</option>";
-// 	for (var i = 0; i < colours; i++) {
-// 		string += "<option value='" + i + "'>" + pegColourNames[i] + "</option>"
-// 	}
-// 	string += "</select>"
-// 	return string
-// }
 
 function gameWon ()	{
 

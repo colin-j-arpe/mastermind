@@ -3,6 +3,8 @@ $page-bk: #F5DEB3;
 $inst-bdr: #3D2B1F;
 $inst-ht: 350px;
 $inst-wd: 600px;
+$win-ht: 200px;
+$win-wd: 400px;
 $peg-size: 36px;
 
 body	{
@@ -94,28 +96,39 @@ body	{
 	}
 }
 
-#instruc-modal	{
+.modal-window	{
 	display: none;
 	position: fixed;
-	height: $inst-ht;
-	width: $inst-wd;
 	top: 50%;
 	left: 50%;
-	margin-top: ($inst-ht/(-2));
-	margin-left: ($inst-wd/(-2));
 	background-color: $fixed-bk;
 	padding: 0 12px;
 	border: 2px solid $inst-bdr;
+}
 
-	#instruc-close-button	{
-		position: absolute;
-		top: 12px;
-		right: 12px;
-	}
+#instruc-modal	{
+	height: $inst-ht;
+	width: $inst-wd;
+	margin-top: ($inst-ht/(-2));
+	margin-left: ($inst-wd/(-2));
+
 	.button-name	{
 		font-weight: bold;
 	}
 	.emph	{
 		font-style: italic;
 	}
+}
+
+#win-game-modal	{
+	height: $win-ht;
+	width: $win-wd;
+	margin-top: ($win-ht/(-2));
+	margin-left: ($win-wd/(-2));
+}
+
+.close-button 	{
+	position: absolute;
+	top: 12px;
+	right: 12px;
 }
