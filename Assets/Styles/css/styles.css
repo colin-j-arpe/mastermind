@@ -39,14 +39,18 @@ body {
   bottom: 0; }
   #page-footer #pending-guess {
     margin-bottom: 12px; }
+  #page-footer #available-colours {
+    display: inline-flex; }
   #page-footer #submit-guess {
-    position: absolute;
-    right: 12px;
-    bottom: 12px;
-    visibility: hidden; }
+    display: inline-flex;
+    position: relative;
+    /*right: 12px;*/
+    bottom: 6px;
+    /*visibility: hidden;*/ }
 
 #previous-guesses {
-  margin-top: 100px; }
+  margin: 100px 0 120px;
+  overflow: auto; }
   #previous-guesses .guess-number {
     width: 48px;
     text-align: center;

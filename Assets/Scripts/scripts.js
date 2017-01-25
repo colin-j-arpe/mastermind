@@ -53,6 +53,7 @@ $(document).ready(function () {
 		var pickPegs = createColourPicker(colourMenu.val());
 		$("#submit-guess")[0].style.visibility = "hidden";
 		footer.style.display = "block";
+		pageBody.html("");
 		thisGame = new Game (guessPegs.length, pickPegs.length);
 
 		if (stopBlinking) clearInterval(stopBlinking);
@@ -150,6 +151,7 @@ $(document).ready(function () {
 		});
 		thisGame.livePeg = 0;
 		thisGame.guess.fill(NaN);
+		$("#submit-guess")[0].style.visibility = "hidden";
 	}
 
 	// var nextGuess = [];
@@ -185,21 +187,6 @@ console.log(combination);
 	}
 	this.combination = this.createNewCombo (width, colours);
 
-	// this.checkBlacks = function ()	{
-	// 	var black = 0;
-	// 	for (var i = 0; i < this.guess.length; i++) {
-	// 		if (this.guess[i] === this.combination[i])	{
-	// 			black++;
-	// 			// checked[i] = true;
-	// 		}
-	// 	}
-	// 	return black;
-	// }
-
-	// this.checkWhites = function ()	{
-	// 	var white = 0
-	// }
-
 	this.checkGuess = function ()	{
 		var checked = [];
 		var results = [0,0];
@@ -217,19 +204,17 @@ console.log(combination);
 		
 		var guessRemaining = [];
 		var answerRemaining = [];
-		var counted = [];
 		for (var i = 0; i < width; i++) {
 			if (!checked[i])	{
 				guessRemaining.push(this.guess[i]);
 				answerRemaining.push(this.combination[i]);
-				counted.push(false);
 			}	
 		}
 		for (var i = 0; i < guessRemaining.length; i++) {
 			match = answerRemaining.indexOf(guessRemaining[i]);
-			if (match >= 0 && !checked[match])	{
+			if (match >= 0)	{
 				results[1]++;
-				checked[match] = true;
+				delete answerRemaining[match];
 			}
 		}
 		return results;

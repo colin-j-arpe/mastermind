@@ -56,16 +56,21 @@ body	{
 	#pending-guess	{
 		margin-bottom: 12px;
 	}
+	#available-colours	{
+		display: inline-flex;
+	}
 	#submit-guess	{
-		position: absolute;
-		right: 12px;
-		bottom: 12px;
-		visibility: hidden;
+		display: inline-flex;
+		position: relative;
+		/*right: 12px;*/
+		bottom: 6px;
+		/*visibility: hidden;*/
 	}
 }
 
 #previous-guesses	{
-	margin-top: 100px;
+	margin: 100px 0 120px;
+	overflow: auto;
 
 	.guess-number	{
 		width: 48px;
