@@ -21,9 +21,12 @@ $(document).ready(function () {
 	var instButton = $("#open-instructions");
 	var instClose = $("#instruc-close-button");
 	var newButton = $("#new-game-button");
+	var pageBody = $("#previous-guesses");
 	var footer = $("#page-footer")[0];
 	var guessRow = $("#pending-guess");
 	var pickRow = $("#available-colours");
+	var guessButton = $("#submit-guess");
+	var thisGame = new Game (0,0);
 
 // Fill menus
 	for (var i = 2; i <= 16; i++) {
@@ -33,7 +36,7 @@ $(document).ready(function () {
 		colourMenu.append("<option value='" + i + "'" + colourDefault(i) + ">" + i + "</option>");
 	}
 
-// Show/hide instructions modal
+// Buttons
 	instButton.on("click", function () {
 		instModal.style.display = "block";
 	});
@@ -41,15 +44,16 @@ $(document).ready(function () {
 		instModal.style.display = "none";
 	});
 
-// Start game
 	newButton.on("click", newGame);
+	guessButton.on("click", submitGuess);
 
+// Start game
 	function newGame ()	{
 		var guessPegs = createBlankGuess(widthMenu.val());
 		var pickPegs = createColourPicker(colourMenu.val());
 		$("#submit-guess")[0].style.visibility = "hidden";
 		footer.style.display = "block";
-		var thisGame = new Game (guessPegs.length, pickPegs.length);
+		thisGame = new Game (guessPegs.length, pickPegs.length);
 
 		if (stopBlinking) clearInterval(stopBlinking);
 		stopBlinking = setInterval(blinker, 400);
@@ -70,6 +74,17 @@ $(document).ready(function () {
 		}
 	}
 
+// Submit guess, show result
+		function submitGuess () {
+console.log("clicked");
+			pageBody.prepend("<div class='prev-guess'></div>")
+			$(".prev-guess").eq(0).append("<div class='guess-number'><h3>" + $(".prev-guess").length + "</h3></div>")
+			for (var i = 0; i < thisGame.guess.length; i++) {
+				$(".prev-guess").eq(0).append("<div class='peg' style='background-color: " + pegColourRGBs[thisGame.guess[i]] + "'></div>");
+			}
+		}
+
+// Fill out footer row content
 	function createBlankGuess (num)	{
 		guessRow.html("");
 		for (var i = 0; i < num; i++) {
@@ -86,6 +101,7 @@ $(document).ready(function () {
 		return $(".pick-peg");
 	}
 
+// Live fucntionality in footer
 	function guessListener (colours, guesses, theGame, stop)	{
 		colours.each(function (index) {
 			$(this).on("click", function() {
@@ -113,30 +129,23 @@ $(document).ready(function () {
 		game.guess[game.livePeg] = i;
 		game.livePeg = (game.livePeg + 1) % guesses.length;
 		if (!game.guess.some(isNaN)) {
-console.log("full");
 			$("#submit-guess")[0].style.visibility = "visible";
 		}
 	}
 
-	// function blinker (peg)
-
-	// function blinker (peg)	{
-	// 	var stop = setInterval
+	// var nextGuess = [];
+	// for (var i = 0; i < gameWidth; i++) {
+	// 	nextGuess[i] = (-1);
 	// }
 
-	var nextGuess = [];
-	for (var i = 0; i < gameWidth; i++) {
-		nextGuess[i] = (-1);
-	}
 
-
-	for (let i = 0; i < gameWidth; i++) {
-		$(".guess-menu").eq(i).on("change", function ()	{
-			var colour = $(".guess-menu").eq(i).val();
-			$(".guess-peg").eq(i).attr("background-color", pegColourRGBs[colour]);
-			nextGuess[i] = colour;
-		});
-	}
+	// for (let i = 0; i < gameWidth; i++) {
+	// 	$(".guess-menu").eq(i).on("change", function ()	{
+	// 		var colour = $(".guess-menu").eq(i).val();
+	// 		$(".guess-peg").eq(i).attr("background-color", pegColourRGBs[colour]);
+	// 		nextGuess[i] = colour;
+	// 	});
+	// }
 });
 
 function Game (width, colours)	{

@@ -50,6 +50,17 @@ body	{
 
 #previous-guesses	{
 	margin-top: 100px;
+
+	.guess-number	{
+		width: 48px;
+		text-align: center;
+		display: inline-flex;
+
+		h3	{
+			text-align: center;
+			font-weight: bolder;
+		}
+	}
 }
 
 #instruc-modal	{

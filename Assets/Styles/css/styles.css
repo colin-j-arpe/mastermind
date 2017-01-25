@@ -34,6 +34,13 @@ body {
 
 #previous-guesses {
   margin-top: 100px; }
+  #previous-guesses .guess-number {
+    width: 48px;
+    text-align: center;
+    display: inline-flex; }
+    #previous-guesses .guess-number h3 {
+      text-align: center;
+      font-weight: bolder; }
 
 #instruc-modal {
   display: none;
