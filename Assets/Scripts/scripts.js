@@ -57,7 +57,7 @@ $(document).ready(function () {
 
 		if (stopBlinking) clearInterval(stopBlinking);
 		stopBlinking = setInterval(blinker, 400);
-		guessListener(pickPegs, guessPegs, thisGame, stopBlinking);
+		guessListener(pickPegs, guessPegs, stopBlinking);
 		
 		function blinker () {
 			var peg = thisGame.livePeg
@@ -84,16 +84,15 @@ $(document).ready(function () {
 			$(".prev-guess").eq(0).append("<div class='guess-results'></div>");
 			$(".guess-results").eq(0).append("<div class='black-peg-row'></div><div class='white-peg-row'></div>");
 
-			// black = thisGame.checkBlacks;
-			// var black = 4;
-			for (var i = 0; i < thisGame.checkBlacks(); i++) {
+			results = thisGame.checkGuess();
+			for (var i = 0; i < results[0]; i++) {
 				$(".black-peg-row").eq(0).append("<div class='result-peg black-peg'></div>");
 			}
-			// white = thisGame.checkWhites;
-			var white = 0;
-			for (var i = 0; i < white; i++) {
+			for (var i = 0; i < results[1]; i++) {
 				$(".white-peg-row").eq(0).append("<div class='result-peg white-peg'></div>");
 			}
+
+			clearGuess();
 		}
 
 // Fill out footer row content
@@ -114,35 +113,43 @@ $(document).ready(function () {
 	}
 
 // Live fucntionality in footer
-	function guessListener (colours, guesses, theGame, stop)	{
+	function guessListener (colours, guesses, stop)	{
 		colours.each(function (index) {
 			$(this).on("click", function() {
-				recolourGuess(index, theGame.livePeg);
-				updateGuess(index, guesses, theGame);
+				recolourGuess(index);
+				updateGuess(index, guesses);
 			});
 		});
 		guesses.each(function (index) {
 			$(this).on("click", function() {
-				if (isNaN(theGame.guess[theGame.livePeg])) {
-					$(".guess-peg").eq(theGame.livePeg)[0].style.backgroundColor = "#bbbbbb";
+				if (isNaN(thisGame.guess[thisGame.livePeg])) {
+					$(".guess-peg").eq(thisGame.livePeg)[0].style.backgroundColor = "#bbbbbb";
 				}	else	{
-					$(".guess-peg").eq(theGame.livePeg)[0].style.backgroundColor = pegColourRGBs[theGame.guess[theGame.livePeg]];
+					$(".guess-peg").eq(thisGame.livePeg)[0].style.backgroundColor = pegColourRGBs[thisGame.guess[thisGame.livePeg]];
 				}
-				theGame.livePeg = index;
+				thisGame.livePeg = index;
 			});
 		});
 	}
 
 	function recolourGuess (colour, guessPeg)	{
-		$(".guess-peg")[guessPeg].style.backgroundColor = pegColourRGBs[colour];
+		$(".guess-peg")[thisGame.livePeg].style.backgroundColor = pegColourRGBs[colour];
 	}
 
-	function updateGuess (i, guesses, game)	{
-		game.guess[game.livePeg] = i;
-		game.livePeg = (game.livePeg + 1) % guesses.length;
-		if (!game.guess.some(isNaN)) {
+	function updateGuess (i, guesses)	{
+		thisGame.guess[thisGame.livePeg] = i;
+		thisGame.livePeg = (thisGame.livePeg + 1) % guesses.length;
+		if (!thisGame.guess.some(isNaN)) {
 			$("#submit-guess")[0].style.visibility = "visible";
 		}
+	}
+
+	function clearGuess ()	{
+		$(".guess-peg").each(function () {
+			$(this)[0].style.backgroundColor = "#bbbbbb";
+		});
+		thisGame.livePeg = 0;
+		thisGame.guess.fill(NaN);
 	}
 
 	// var nextGuess = [];
@@ -178,51 +185,54 @@ console.log(combination);
 	}
 	this.combination = this.createNewCombo (width, colours);
 
-	this.checkBlacks = function ()	{
-		var black = 0;
-		for (var i = 0; i < this.guess.length; i++) {
-			if (this.guess[i] === this.combination[i])	{
-				black++;
-				// checked[i] = true;
-			}
-		}
-		return black;
-	}
+	// this.checkBlacks = function ()	{
+	// 	var black = 0;
+	// 	for (var i = 0; i < this.guess.length; i++) {
+	// 		if (this.guess[i] === this.combination[i])	{
+	// 			black++;
+	// 			// checked[i] = true;
+	// 		}
+	// 	}
+	// 	return black;
+	// }
 
-	function checkGuess (guess, answer)	{
+	// this.checkWhites = function ()	{
+	// 	var white = 0
+	// }
+
+	this.checkGuess = function ()	{
 		var checked = [];
-		var black = 0;
-		var white = 0;
-		for (var i = 0; i < gameWidth; i++) {
+		var results = [0,0];
+		for (var i = 0; i < width; i++) {
 			checked.push(false);
 		}
 
-		for (var i = 0; i < gameWidth; i++) {
-			if (guess[i] === answer[i])	{
-				black++;
+		for (var i = 0; i < width; i++) {
+			if (this.guess[i] === this.combination[i])	{
+				results[0]++;
 				checked[i] = true;
 			}
 		}
-		if (black = gameWidth) gameWon();
+		// if (results[0] = width) gameWon();
 		
 		var guessRemaining = [];
 		var answerRemaining = [];
 		var counted = [];
-		for (var i = 0; i < gameWidth; i++) {
+		for (var i = 0; i < width; i++) {
 			if (!checked[i])	{
-				guessRemaining.push(guess[i]);
-				answerRemaining.push(answer[i]);
+				guessRemaining.push(this.guess[i]);
+				answerRemaining.push(this.combination[i]);
 				counted.push(false);
 			}	
 		}
 		for (var i = 0; i < guessRemaining.length; i++) {
 			match = answerRemaining.indexOf(guessRemaining[i]);
 			if (match >= 0 && !checked[match])	{
-				white++;
+				results[1]++;
 				checked[match] = true;
 			}
 		}
-		showResult (guess, black, white);
+		return results;
 	}
 }
 
