@@ -83,18 +83,15 @@ $(document).ready(function () {
 			}
 			$(".prev-guess").eq(0).append("<div class='guess-results'></div>");
 			$(".guess-results").eq(0).append("<div class='black-peg-row'></div><div class='white-peg-row'></div>");
-				$(".black-peg-row").eq(0).append("<div class='result-peg black-peg'></div>");
-				$(".white-peg-row").eq(0).append("<div class='result-peg white-peg'></div>");
 
 			// black = thisGame.checkBlacks;
-			var black = 4;
-			for (var i = 0; i < black; i++) {
-console.log(i);
+			// var black = 4;
+			for (var i = 0; i < thisGame.checkBlacks(); i++) {
 				$(".black-peg-row").eq(0).append("<div class='result-peg black-peg'></div>");
 			}
 			// white = thisGame.checkWhites;
-			var white = 4;
-			for (var i = 0; i < white.length; i++) {
+			var white = 0;
+			for (var i = 0; i < white; i++) {
 				$(".white-peg-row").eq(0).append("<div class='result-peg white-peg'></div>");
 			}
 		}
@@ -176,9 +173,21 @@ function Game (width, colours)	{
 		for (var i = 0; i < width; i++) {
 			combination[i] = Math.floor(Math.random() * colours);
 		}
+console.log(combination);
 		return combination;
 	}
 	this.combination = this.createNewCombo (width, colours);
+
+	this.checkBlacks = function ()	{
+		var black = 0;
+		for (var i = 0; i < this.guess.length; i++) {
+			if (this.guess[i] === this.combination[i])	{
+				black++;
+				// checked[i] = true;
+			}
+		}
+		return black;
+	}
 
 	function checkGuess (guess, answer)	{
 		var checked = [];
