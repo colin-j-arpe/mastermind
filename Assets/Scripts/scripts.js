@@ -3,6 +3,15 @@ var gameColours = 6;
 var pegColourNames = ["Yellow", "Red", "Green", "Blue", "Black", "White", "Orange", "Purple", "Cyan", "Magenta","Brown", "Pink"];
 var pegColourRGBs = ["#ffff00", "#ff0000", "#00ff00", "#0000ff", "#000000", "#ffffff", "#ff8800", "#880088", "#00ffff", "#ff00ff", "#994400", "#ffaaaa"];
 
+function widthDefault (width)	{
+	if (width === gameWidth) return (" selected");
+	return;
+}
+function colourDefault (colour)	{
+	if (colour === gameColours) return (" selected");
+	return;
+}
+
 $(document).ready(function () {
 // DOM referents
 	var widthMenu = $("#width-menu");
@@ -35,19 +44,20 @@ $(document).ready(function () {
 	newButton.on("click", newGame);
 
 	function newGame ()	{
-		console.log("yup");
-		console.log(widthMenu.val());
-		console.log(colourMenu.val());
-		createBlankGuess(widthMenu.val());
-		createColourPicker(colourMenu.val());
+		var guessPegs = createBlankGuess(widthMenu.val());
+		var pickPegs = createColourPicker(colourMenu.val());
 		footer.style.display = "block";
+		var thisGame = new Game (guessPegs.length, pickPegs.length);
+
+		guessListener(pickPegs, guessPegs, thisGame);
 	}
 
 	function createBlankGuess (num)	{
 		guessRow.html("");
 		for (var i = 0; i < num; i++) {
-			guessRow.append("<div class='peg guess-peg'></div>");
+			guessRow.append("<div class='peg guess-peg' style='background-color: #bbbbbb'></div>");
 		}
+		return $(".guess-peg");
 	}
 
 	function createColourPicker (num)	{
@@ -55,25 +65,37 @@ $(document).ready(function () {
 		for (var i = 0; i < num; i++) {
 			pickRow.append("<div class='peg pick-peg' style='background-color: " + pegColourRGBs[i] + "'></div>");
 		}
-		var pickPegs = $(".pick-peg")
-		for (let j = 0; j < pickPegs.length; j++) {
-			pickPegs[j]
-		}
+		return $(".pick-peg");
 	}
 
-	var combination = createNewCombo (gameWidth, gameColours);
+	function guessListener (colours, guesses, theGame)	{
+		colours.each(function (index) {
+			$(this).on("click", function() {
+				recolourGuess(index, theGame.livePeg);
+				updateGuess(index, guesses, theGame);
+			});
+		});
+	}
+
+	function recolourGuess (colour, guessPeg)	{
+		$(".guess-peg")[guessPeg].style.backgroundColor = pegColourRGBs[colour];
+	}
+
+	function updateGuess (i, guesses, game)	{
+		game.guess[game.livePeg] = i;
+		game.livePeg = (game.livePeg + 1) % guesses.length;
+console.log(game.guess);
+	}
+
+	// function blinker (peg)	{
+	// 	var stop = setInterval
+	// }
+
 	var nextGuess = [];
 	for (var i = 0; i < gameWidth; i++) {
 		nextGuess[i] = (-1);
 	}
 
-	for (var i = 0; i < gameWidth; i++) {
-		$("#combination-row").append("<div class='combo-peg'></div>")
-	}
-
-	for (var i = 0; i < gameWidth; i++) {
-		$("#current-guess").prepend("<div class='guess-div'><div class='combo-peg guess-peg'></div>" + guessMenu(gameColours) + "</div>");
-	}
 
 	for (let i = 0; i < gameWidth; i++) {
 		$(".guess-menu").eq(i).on("change", function ()	{
@@ -84,67 +106,67 @@ $(document).ready(function () {
 	}
 });
 
-function widthDefault (width)	{
-	if (width === gameWidth) return (" selected");
-	return;
-}
-function colourDefault (colour)	{
-	if (colour === gameColours) return (" selected");
-	return;
-}
+function Game (guess, colours)	{
+	this.guesses = guess;
+	this.colours = colours;
+	this.guess = [];
+	this.livePeg = 0;
 
-function createNewCombo	(width, colours)	{
-	var combination = [];
-	for (var i = 0; i < width; i++) {
-		combination[i] = Math.floor(Math.random() * colours);
-	}
-	return combination;
-}
-
-function guessMenu (colours)	{
-	var string = "<select class='guess-menu'><option disabled>Select colour...</option>";
-	for (var i = 0; i < colours; i++) {
-		string += "<option value='" + i + "'>" + pegColourNames[i] + "</option>"
-	}
-	string += "</select>"
-	return string
-}
-
-function checkGuess (guess, answer)	{
-	var checked = [];
-	var black = 0;
-	var white = 0;
-	for (var i = 0; i < gameWidth; i++) {
-		checked.push(false);
-	}
-
-	for (var i = 0; i < gameWidth; i++) {
-		if (guess[i] === answer[i])	{
-			black++;
-			checked[i] = true;
+	this.createNewCombo = function (width, colours)	{
+		var combination = [];
+		for (var i = 0; i < width; i++) {
+			combination[i] = Math.floor(Math.random() * colours);
 		}
+		return combination;
 	}
-	if (black = gameWidth) gameWon();
-	
-	var guessRemaining = [];
-	var answerRemaining = [];
-	var counted = [];
-	for (var i = 0; i < gameWidth; i++) {
-		if (!checked[i])	{
-			guessRemaining.push(guess[i]);
-			answerRemaining.push(answer[i]);
-			counted.push(false);
-		}	
-	}
-	for (var i = 0; i < guessRemaining.length; i++) {
-		match = answerRemaining.indexOf(guessRemaining[i]);
-		if (match >= 0 && !checked[match])	{
-			white++;
-			checked[match] = true;
+	this.combination = this.createNewCombo (guess, colours);
+
+	function checkGuess (guess, answer)	{
+		var checked = [];
+		var black = 0;
+		var white = 0;
+		for (var i = 0; i < gameWidth; i++) {
+			checked.push(false);
 		}
+
+		for (var i = 0; i < gameWidth; i++) {
+			if (guess[i] === answer[i])	{
+				black++;
+				checked[i] = true;
+			}
+		}
+		if (black = gameWidth) gameWon();
+		
+		var guessRemaining = [];
+		var answerRemaining = [];
+		var counted = [];
+		for (var i = 0; i < gameWidth; i++) {
+			if (!checked[i])	{
+				guessRemaining.push(guess[i]);
+				answerRemaining.push(answer[i]);
+				counted.push(false);
+			}	
+		}
+		for (var i = 0; i < guessRemaining.length; i++) {
+			match = answerRemaining.indexOf(guessRemaining[i]);
+			if (match >= 0 && !checked[match])	{
+				white++;
+				checked[match] = true;
+			}
+		}
+		showResult (guess, black, white);
 	}
-	showResult (guess, black, white);
 }
+
+
+// function guessMenu (colours)	{
+// 	var string = "<select class='guess-menu'><option disabled>Select colour...</option>";
+// 	for (var i = 0; i < colours; i++) {
+// 		string += "<option value='" + i + "'>" + pegColourNames[i] + "</option>"
+// 	}
+// 	string += "</select>"
+// 	return string
+// }
 
 function gameWon ()	{
 
