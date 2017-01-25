@@ -75,6 +75,11 @@ $(document).ready(function () {
 				updateGuess(index, guesses, theGame);
 			});
 		});
+		guesses.each(function (index) {
+			$(this).on("click", function() {
+				theGame.livePeg = index;
+			});
+		});
 	}
 
 	function recolourGuess (colour, guessPeg)	{
@@ -84,7 +89,6 @@ $(document).ready(function () {
 	function updateGuess (i, guesses, game)	{
 		game.guess[game.livePeg] = i;
 		game.livePeg = (game.livePeg + 1) % guesses.length;
-console.log(game.guess);
 	}
 
 	// function blinker (peg)	{
