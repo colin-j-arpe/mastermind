@@ -49,7 +49,23 @@ $(document).ready(function () {
 		footer.style.display = "block";
 		var thisGame = new Game (guessPegs.length, pickPegs.length);
 
-		guessListener(pickPegs, guessPegs, thisGame);
+		stopBlinking = setInterval(blinker, 400);
+		guessListener(pickPegs, guessPegs, thisGame, stopBlinking);
+		
+		function blinker () {
+			var peg = thisGame.livePeg
+			var current = thisGame.guess[peg]
+			var colourNow = guessPegs[peg].style.backgroundColor;
+			if ($(".guess-peg").eq(peg)[0].style.backgroundColor === "rgb(68, 68, 68)")	{
+				if (!current) {
+					$(".guess-peg").eq(peg)[0].style.backgroundColor = "#bbbbbb";
+				}	else	{
+					$(".guess-peg").eq(peg)[0].style.backgroundColor = pegColourRGBs[current];
+				}
+			}	else	{
+				$(".guess-peg").eq(peg)[0].style.backgroundColor = "#444444";
+			}
+		}
 	}
 
 	function createBlankGuess (num)	{
@@ -68,7 +84,7 @@ $(document).ready(function () {
 		return $(".pick-peg");
 	}
 
-	function guessListener (colours, guesses, theGame)	{
+	function guessListener (colours, guesses, theGame, stop)	{
 		colours.each(function (index) {
 			$(this).on("click", function() {
 				recolourGuess(index, theGame.livePeg);
@@ -77,7 +93,9 @@ $(document).ready(function () {
 		});
 		guesses.each(function (index) {
 			$(this).on("click", function() {
+				// clearInterval(stop);
 				theGame.livePeg = index;
+				// stop = blinker($(this));
 			});
 		});
 	}
@@ -90,6 +108,8 @@ $(document).ready(function () {
 		game.guess[game.livePeg] = i;
 		game.livePeg = (game.livePeg + 1) % guesses.length;
 	}
+
+	// function blinker (peg)
 
 	// function blinker (peg)	{
 	// 	var stop = setInterval
