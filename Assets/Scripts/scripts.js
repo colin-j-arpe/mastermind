@@ -20,6 +20,14 @@ function colourDefault (colour)	{
 	return;
 }
 
+function totalCombinations (width, colours)	{
+	var total = colours;
+	for (var i = 0; i < width-1; i++) {
+		total *= colours;
+	}
+	return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 $(document).ready(function () {
 // DOM referents
 	var widthMenu = $("#width-menu");
@@ -231,7 +239,7 @@ $(document).ready(function () {
 		var colours = $(".pick-peg").length;
 		$("#win-width").text(width.toString());
 		$("#win-colours").text(colours.toString());
-		$("#win-combos").text(combinations(width, colours));
+		$("#win-combos").text(totalCombinations(width, colours));
 		$("#win-guesses").text($(".prev-guess").length.toString());
 		winModal.style.display = "block";
 		$(".close-button").eq(1).on("click", function () {
@@ -239,13 +247,6 @@ $(document).ready(function () {
 		});
 
 
-		function combinations (width, colours)	{
-			var total = colours;
-			for (var i = 0; i < width-1; i++) {
-				total *= colours;
-			}
-			return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-		}
 	}
 });	// end of document ready section
 
@@ -300,6 +301,16 @@ console.log(width + ", " +	 colours);
 	// this.guess.length = width;
 	this.combination = [];
 	this.results = [];
+	this.S = [];
+	this.S.length = colours;
+	this.S.fill(true);
+	for (var i = 1; i < width; i++) {
+		var anArray = [];
+		anArray.length = colours;
+		anArray.fill(this.S);
+		this.S = anArray;
+	}
+console.log(this.S);
 
 	this.firstGuess = function ()	{
 console.log("answer is " + this.combination);
