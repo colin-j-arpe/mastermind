@@ -30,10 +30,11 @@ $(document).ready(function () {
 	var codeButton = $("#enter-code-button");
 	var pageBody = $("#previous-guesses");
 	var footer = $("#page-footer")[0];
-	var guessRow = $("#pending-guess");
+	var comboRow = $("#current-combo");
 	var pickRow = $("#available-colours");
 	var guessButton = $("#submit-guess");
-	var submitButton = $("#submit-code");
+	var enterButton = $("#submit-code");
+	// var resultsButton = $("#submit-results");
 	var winModal = $("#win-game-modal")[0];
 
 // Fill menus
@@ -55,7 +56,7 @@ $(document).ready(function () {
 	newButton.on("click", newGame);
 	codeButton.on("click", newCode);
 	guessButton.on("click", submitGuess);
-	// submitButton.on("click", enterResults);
+	enterButton.on("click", submitCode);
 
 // Start game
 	function newGame ()	{
@@ -67,7 +68,7 @@ $(document).ready(function () {
 // Begin new code break
 	function newCode ()	{
 		game = false;
-		thisCode = new Code (comboPegs.length, pickPegs.length);
+		thisCode = new Code (widthMenu.val(), colourMenu.val());
 		resetPage ();
 	}
 
@@ -84,14 +85,27 @@ $(document).ready(function () {
 		pickListener();
 	}
 
+	function closeBoard ()	{
+		clearInterval(stopBlinking);
+		$(".combo-peg").eq(livePeg)[0].style.backgroundColor = pegColourRGBs[currentCombo[livePeg]];
+		$(".combo-peg").each(function() {
+			$(this).off("click");
+		});
+		$(".pick-peg").each(function() {
+			$(this).off("click");
+		});
+		$("#submit-guess").attr("disabled", true);
+		$("#submit-code").attr("disabled", true);
+	}
+
 // Live functionality in footer
 	function pickListener ()	{
 		if (stopBlinking) clearInterval(stopBlinking);
 		stopBlinking = setInterval(blinker, 400);
 		pickPegs.each(function (index) {
 			$(this).on("click", function() {
-				recolourGuess(index);
-				updateGuess(index);
+				recolourPeg(index);
+				updateCombo(index);
 			});
 		});
 		comboPegs.each(function (index) {
@@ -119,11 +133,11 @@ $(document).ready(function () {
 		}
 	}
 
-	function recolourGuess (colour)	{
+	function recolourPeg (colour)	{
 		$(".combo-peg")[livePeg].style.backgroundColor = pegColourRGBs[colour];
 	}
 
-	function updateGuess (colour)	{
+	function updateCombo (colour)	{
 		currentCombo[livePeg] = colour;
 		livePeg = (livePeg + 1) % comboPegs.length;
 		if (!currentCombo.some(isNaN)) {
@@ -136,33 +150,60 @@ $(document).ready(function () {
 	}
 
 // Submit guess, show result
-		function submitGuess () {
-			pageBody.prepend("<div class='prev-guess'></div>")
-			$(".prev-guess").eq(0).append("<div class='guess-number'><h3>" + $(".prev-guess").length + "</h3></div>")
-			for (var i = 0; i < currentCombo.length; i++) {
-				$(".prev-guess").eq(0).append("<div class='peg' style='background-color: " + pegColourRGBs[currentCombo[i]] + "'></div>");
-			}
-			$(".prev-guess").eq(0).append("<div class='guess-results'></div>");
-			$(".guess-results").eq(0).append("<div class='black-peg-row'></div><div class='white-peg-row'></div>");
+	function submitGuess () {
+		newGuessRow();
+		$(".guess-results").eq(0).append("<div class='black-peg-row'></div><div class='white-peg-row'></div>");
 
-			results = thisGame.checkGuess(currentCombo);
-			for (var i = 0; i < results[0]; i++) {
-				$(".black-peg-row").eq(0).append("<div class='result-peg black-peg'></div>");
-			}
-			for (var i = 0; i < results[1]; i++) {
-				$(".white-peg-row").eq(0).append("<div class='result-peg white-peg'></div>");
-			}
-
-			if (results[0] === thisGame.combination.length) winGame();
-			clearGuess();
+		results = thisGame.checkGuess(currentCombo);
+		for (var i = 0; i < results[0]; i++) {
+			$(".black-peg-row").eq(0).append("<div class='result-peg black-peg'></div>");
 		}
+		for (var i = 0; i < results[1]; i++) {
+			$(".white-peg-row").eq(0).append("<div class='result-peg white-peg'></div>");
+		}
+
+		if (results[0] === thisGame.combination.length) winGame();
+		clearGuess();
+	}
+
+	function submitCode ()	{
+		closeBoard();
+		thisCode.combination = currentCombo;
+		currentCombo = thisCode.firstGuess();
+		resultRow();
+	}
+
+	function submitResults ()	{
+		$(".submit-results").eq(0).attr("disabled", true);
+		currentCombo = thisCode.nextGuess($(".black-peg-menu").eq(0).val(), $(".white-peg-menu").eq(0).val());
+		resultRow();
+	}
+
+	function resultRow ()	{
+		newGuessRow();
+		$(".guess-results").eq(0).append("Black pegs (exact matches): <select class='black-peg-menu'></select>  White pegs (right colour, wrong place): <select class='white-peg-menu'></select> <button class='submit-results'>Submit Results</button>");
+		for (var i = 0; i <= comboPegs.length; i++) {
+			$(".black-peg-menu").eq(0).append("<option>" + i + "</option>");
+			$(".white-peg-menu").eq(0).append("<option>" + i + "</option>");
+		}
+		$(".submit-results").eq(0).on("click", submitResults);
+	}
+
+	function newGuessRow ()	{
+		pageBody.prepend("<div class='prev-guess'></div>")
+		$(".prev-guess").eq(0).append("<div class='guess-number'><h3>" + $(".prev-guess").length + "</h3></div>")
+		for (var i = 0; i < currentCombo.length; i++) {
+			$(".prev-guess").eq(0).append("<div class='peg' style='background-color: " + pegColourRGBs[currentCombo[i]] + "'></div>");
+		}
+		$(".prev-guess").eq(0).append("<div class='guess-results'></div>");
+	}
 
 
 // Fill out footer row content
 	function createBlankGuess (num)	{
-		guessRow.html("");
+		comboRow.html("");
 		for (var i = 0; i < num; i++) {
-			guessRow.append("<div class='peg combo-peg' style='background-color: #bbbbbb'></div>");
+			comboRow.append("<div class='peg combo-peg' style='background-color: #bbbbbb'></div>");
 		}
 		return $(".combo-peg");
 	}
@@ -204,16 +245,6 @@ $(document).ready(function () {
 				total *= colours;
 			}
 			return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-		}
-
-		function closeBoard ()	{
-			clearInterval(stopBlinking);
-			$(".combo-peg").each(function() {
-				$(this).off("click");
-			});
-			$(".pick-peg").each(function() {
-				$(this).off("click");
-			});	
 		}
 	}
 });	// end of document ready section
@@ -264,6 +295,24 @@ console.log(combination);
 }
 
 function Code (width, colours)	{
+console.log(width + ", " +	 colours);
 	this.guess = [];
-	this.guess.length = width;
+	// this.guess.length = width;
+	this.combination = [];
+	this.results = [];
+
+	this.firstGuess = function ()	{
+console.log("answer is " + this.combination);
+		for (var i = 0; i < width; i++) {
+			this.guess.push(i % colours);
+		}
+console.log("first guess is " + this.guess);
+		return this.guess;
+	}
+
+	this.nextGuess = function (black, white)	{
+		this.results.push(new Array(black, white));
+console.log("results are " + this.results[0][0] + " black and " + this.results[0][1] + " white");
+		return this.guess;
+	}
 }
