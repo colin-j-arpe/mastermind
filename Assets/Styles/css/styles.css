@@ -44,9 +44,11 @@ body {
   #page-footer #submit-guess {
     display: inline-flex;
     position: relative;
-    /*right: 12px;*/
-    bottom: 6px;
-    /*visibility: hidden;*/ }
+    bottom: 6px; }
+  #page-footer #submit-code {
+    display: inline-flex;
+    position: relative;
+    bottom: 6px; }
 
 #previous-guesses {
   margin: 100px 0 120px;

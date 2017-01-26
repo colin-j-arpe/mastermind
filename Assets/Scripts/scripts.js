@@ -19,15 +19,17 @@ $(document).ready(function () {
 	var colourMenu = $("#colour-menu");
 	var instModal = $("#instruc-modal")[0];
 	var instButton = $("#open-instructions");
-	// var modalClose = $(".close-button");
 	var newButton = $("#new-game-button");
+	var codeButton = $("#enter-code-button");
 	var pageBody = $("#previous-guesses");
 	var footer = $("#page-footer")[0];
 	var guessRow = $("#pending-guess");
 	var pickRow = $("#available-colours");
 	var guessButton = $("#submit-guess");
+	var submitButton = $("#submit-code");
 	var winModal = $("#win-game-modal")[0];
 	var thisGame = new Game (0,0);
+	// var thisCode = new Code (0,0);
 
 // Fill menus
 	for (var i = 2; i <= 16; i++) {
@@ -46,6 +48,7 @@ $(document).ready(function () {
 	});
 
 	newButton.on("click", newGame);
+	codeButton.on("click", newCode);
 	guessButton.on("click", submitGuess);
 
 // Start game
@@ -53,6 +56,7 @@ $(document).ready(function () {
 		var guessPegs = createBlankGuess(widthMenu.val());
 		var pickPegs = createColourPicker(colourMenu.val());
 		$("#submit-guess")[0].style.visibility = "hidden";
+		$("#submit-code")[0].style.visibility = "hidden";
 		footer.style.display = "block";
 		pageBody.html("");
 		thisGame = new Game (guessPegs.length, pickPegs.length);
@@ -61,18 +65,39 @@ $(document).ready(function () {
 		stopBlinking = setInterval(blinker, 400);
 		guessListener(pickPegs, guessPegs, stopBlinking);
 		
-		function blinker () {
-			var peg = thisGame.livePeg
-			var current = thisGame.guess[peg]
-			if ($(".guess-peg").eq(peg)[0].style.backgroundColor === "rgb(68, 68, 68)")	{
-				if (isNaN(current)) {
-					$(".guess-peg").eq(peg)[0].style.backgroundColor = "#bbbbbb";
+	}
+
+// Live functionality in footer
+	function guessListener (colours, guesses, stop)	{
+		colours.each(function (index) {
+			$(this).on("click", function() {
+				recolourGuess(index);
+				updateGuess(index, guesses);
+			});
+		});
+		guesses.each(function (index) {
+			$(this).on("click", function() {
+				if (isNaN(thisGame.guess[thisGame.livePeg])) {
+					$(".guess-peg").eq(thisGame.livePeg)[0].style.backgroundColor = "#bbbbbb";
 				}	else	{
-					$(".guess-peg").eq(peg)[0].style.backgroundColor = pegColourRGBs[current];
+					$(".guess-peg").eq(thisGame.livePeg)[0].style.backgroundColor = pegColourRGBs[thisGame.guess[thisGame.livePeg]];
 				}
+				thisGame.livePeg = index;
+			});
+		});
+	}
+
+	function blinker () {
+		var peg = thisGame.livePeg
+		var current = thisGame.guess[peg]
+		if ($(".guess-peg").eq(peg)[0].style.backgroundColor === "rgb(68, 68, 68)")	{
+			if (isNaN(current)) {
+				$(".guess-peg").eq(peg)[0].style.backgroundColor = "#bbbbbb";
 			}	else	{
-				$(".guess-peg").eq(peg)[0].style.backgroundColor = "#444444";
+				$(".guess-peg").eq(peg)[0].style.backgroundColor = pegColourRGBs[current];
 			}
+		}	else	{
+			$(".guess-peg").eq(peg)[0].style.backgroundColor = "#444444";
 		}
 	}
 
@@ -98,6 +123,22 @@ $(document).ready(function () {
 			clearGuess();
 		}
 
+// Begin new code break
+	function newCode ()	{
+		var guessPegs = createBlankGuess(widthMenu.val());
+		var pickPegs = createColourPicker(colourMenu.val());
+		$("#submit-guess")[0].style.visibility = "hidden";
+		$("#submit-code")[0].style.visibility = "hidden";
+		footer.style.display = "block";
+		pageBody.html("");
+		// thisCode = new Code (guessPegs.length, pickPegs.length);
+
+		if (stopBlinking) clearInterval(stopBlinking);
+		stopBlinking = setInterval(blinker, 400);
+		guessListener(pickPegs, guessPegs, stopBlinking);
+		
+	}
+
 // Fill out footer row content
 	function createBlankGuess (num)	{
 		guessRow.html("");
@@ -113,26 +154,6 @@ $(document).ready(function () {
 			pickRow.append("<div class='peg pick-peg' style='background-color: " + pegColourRGBs[i] + "'></div>");
 		}
 		return $(".pick-peg");
-	}
-
-// Live fucntionality in footer
-	function guessListener (colours, guesses, stop)	{
-		colours.each(function (index) {
-			$(this).on("click", function() {
-				recolourGuess(index);
-				updateGuess(index, guesses);
-			});
-		});
-		guesses.each(function (index) {
-			$(this).on("click", function() {
-				if (isNaN(thisGame.guess[thisGame.livePeg])) {
-					$(".guess-peg").eq(thisGame.livePeg)[0].style.backgroundColor = "#bbbbbb";
-				}	else	{
-					$(".guess-peg").eq(thisGame.livePeg)[0].style.backgroundColor = pegColourRGBs[thisGame.guess[thisGame.livePeg]];
-				}
-				thisGame.livePeg = index;
-			});
-		});
 	}
 
 	function recolourGuess (colour, guessPeg)	{
