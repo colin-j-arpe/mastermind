@@ -299,7 +299,7 @@ console.log(combination);
 
 function Code (width, colours)	{
 console.log(width + ", " +	 colours);
-	this.guess = [];
+	this.guesses = [];
 	this.newGuess = [];
 	this.sendGuess = false;
 	// this.guess.length = width;
@@ -314,32 +314,55 @@ console.log(width + ", " +	 colours);
 	// 	anArray.fill(this.S);
 	// 	this.S = anArray;
 	// }
+	var startHere = [];
+	startHere.length = width;
+	startHere.fill(false);
 
 	this.firstGuess = function ()	{
 console.log("answer is " + this.combination);
 		for (var i = 0; i < width; i++) {
-			this.guess.push(i % colours);
+			this.newGuess.push(i % colours);
 		}
-console.log("first guess is " + this.guess);
-		return this.guess;
+console.log("first guess is " + this.newGuess);
+		// this.guesses.push(this.newGuess);
+		this.guesses.push(new Array);
+		for (var i = 0; i < width; i++) {
+			this.guesses[this.guesses.length-1][i] = this.newGuess[i]
+		}
+		return this.newGuess;
 	}
 
 	this.nextGuess = function (black, white)	{
+console.log("thisguess is " + this.guesses[this.guesses.length-1] + ", newguess is " + this.newGuess);
 		this.results.push(new Array(black, white));
 		this.sendGuess = false;
 		this.traversePossibilities(width-1);
-		this.guess = this.newGuess;
-		return this.guess;
+		this.guesses.push(new Array);
+		for (var i = 0; i < width; i++) {
+			this.guesses[this.guesses.length-1][i] = this.newGuess[i]
+		}
+		startHere.fill(true);
+console.log("now returning guess of " + this.newGuess);
+		return this.newGuess;
 	}
 
 	this.traversePossibilities = function (i)	{
-		if (i < 0) return;
+if (this.sendGuess) console.log("returning from level " + i);
+		if (i < 0 || this.sendGuess) return;
 		for (var j = 0; j < colours; j++) {
+			if (startHere[i]) {
+				j = this.newGuess[i];
+				startHere[i] = false;
+			}
 			this.newGuess[i] = j;
+console.log("newguess is now " + this.newGuess);
 			this.traversePossibilities(i-1);
+if (this.sendGuess) console.log("returning from level " + i);
 			if (this.sendGuess) return;
-			testResult = this.evaluate();
-			this.checkResult(testResult, this.results, this.results.length-1);
+			// testResult = this.evaluate();
+			this.checkResult(this.results.length-1);
+			if (this.sendGuess) return;
+// console.log("sendguess is " + this.sendGuess);
 			// for (var k = 0; k < this.results.length; k++) {
 			// 	if (testResult[0] == this.results[k][0] && testResult[1] == this.results[k][1]) {
 			// 		this.sendGuess = true;
@@ -349,24 +372,27 @@ console.log("first guess is " + this.guess);
 		}
 	}
 
-	this.checkResult = function (test, past, i) {
+	this.checkResult = function (i) {
+console.log("check level " + i);
 		if (i < 0) {
 			this.sendGuess = true;
-console.log("nailed it");
+// console.log("nailed it");
 			return;
 		}
-console.log("testing " + test + " against " + past[i]);
-if (test[0] == past[i][0]) {console.log("true")} else {console.log("false")};
-if (test[1] == past[i][1]) {console.log("true")} else {console.log("false")};
-		if ((test[0] == past[i][0]) && (test[1] == past[i][1])) {
-console.log("yup");
-			this.checkResult(test, past, i-1);
+		var testResult = this.evaluate(i);
+console.log("testing " + testResult + " against " + this.results[i]);
+// if (test[0] == past[i][0]) {console.log("true")} else {console.log("false")};
+// if (test[1] == past[i][1]) {console.log("true")} else {console.log("false")};
+		if ((testResult[0] == this.results[i][0]) && (testResult[1] == this.results[i][1])) {
+// console.log("yup");
+			this.checkResult(	i-1);
 			return;
 		}
 		return;
 	}
 
-	this.evaluate = function ()	{
+	this.evaluate = function (j)	{
+console.log("evaluating " + this.guesses[j] + " against " + this.newGuess);
 		var checked = [];
 		checked.fill(false);
 		var tryResults = [0,0];
@@ -375,17 +401,18 @@ console.log("yup");
 		// }
 
 		for (var i = 0; i < width; i++) {
-			if (this.guess[i] === this.newGuess[i])	{
+			if (this.guesses[j][i] === this.newGuess[i])	{
 				tryResults[0]++;
 				checked[i] = true;
 			}
 		}
 		
+// console.log(tryResults[0] + " black pegs");
 		var guessRemaining = [];
 		var answerRemaining = [];
 		for (var i = 0; i < width; i++) {
 			if (!checked[i])	{
-				guessRemaining.push(this.guess[i]);
+				guessRemaining.push(this.guesses[j][i]);
 				answerRemaining.push(this.newGuess[i]);
 			}	
 		}
@@ -396,6 +423,7 @@ console.log("yup");
 				delete answerRemaining[match];
 			}
 		}
+// console.log(tryResults[1] + " white pegs");
 		return tryResults;
 	}
 }
