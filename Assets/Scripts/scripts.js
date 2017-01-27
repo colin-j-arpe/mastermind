@@ -192,11 +192,19 @@ $(document).ready(function () {
 	function resultRow ()	{
 		newGuessRow();
 		$(".guess-results").eq(0).append("Black pegs (exact matches): <select class='black-peg-menu'></select>  White pegs (right colour, wrong place): <select class='white-peg-menu'></select> <button class='submit-results'>Submit Results</button>");
+		defaultResults = thisCode.evaluate(currentCombo, thisCode.combination);
 		for (var i = 0; i <= comboPegs.length; i++) {
-			$(".black-peg-menu").eq(0).append("<option>" + i + "</option>");
-			$(".white-peg-menu").eq(0).append("<option>" + i + "</option>");
+			$(".black-peg-menu").eq(0).append("<option" + blackDefault(i) + ">" + i + "</option>");
+			$(".white-peg-menu").eq(0).append("<option" + whiteDefault(i) + ">" + i + "</option>");
 		}
 		$(".submit-results").eq(0).on("click", submitResults);
+
+		function blackDefault (num)	{
+			if (defaultResults[0] === num) return (" selected");
+		}
+		function whiteDefault (num)	{
+			if (defaultResults[1] === num) return (" selected");
+		}
 	}
 
 	function newGuessRow ()	{
@@ -379,20 +387,20 @@ console.log("check level " + i);
 // console.log("nailed it");
 			return;
 		}
-		var testResult = this.evaluate(i);
+		var testResult = this.evaluate(this.guesses[i], this.newGuess);
 console.log("testing " + testResult + " against " + this.results[i]);
 // if (test[0] == past[i][0]) {console.log("true")} else {console.log("false")};
 // if (test[1] == past[i][1]) {console.log("true")} else {console.log("false")};
 		if ((testResult[0] == this.results[i][0]) && (testResult[1] == this.results[i][1])) {
 // console.log("yup");
-			this.checkResult(	i-1);
+			this.checkResult(i-1);
 			return;
 		}
 		return;
 	}
 
-	this.evaluate = function (j)	{
-console.log("evaluating " + this.guesses[j] + " against " + this.newGuess);
+	this.evaluate = function (oldGuess, currentGuess)	{
+console.log("evaluating " + oldGuess + " against " + currentGuess);
 		var checked = [];
 		checked.fill(false);
 		var tryResults = [0,0];
@@ -401,7 +409,7 @@ console.log("evaluating " + this.guesses[j] + " against " + this.newGuess);
 		// }
 
 		for (var i = 0; i < width; i++) {
-			if (this.guesses[j][i] === this.newGuess[i])	{
+			if (oldGuess[i] === currentGuess[i])	{
 				tryResults[0]++;
 				checked[i] = true;
 			}
@@ -412,8 +420,8 @@ console.log("evaluating " + this.guesses[j] + " against " + this.newGuess);
 		var answerRemaining = [];
 		for (var i = 0; i < width; i++) {
 			if (!checked[i])	{
-				guessRemaining.push(this.guesses[j][i]);
-				answerRemaining.push(this.newGuess[i]);
+				guessRemaining.push(oldGuess[i]);
+				answerRemaining.push(currentGuess[i]);
 			}	
 		}
 		for (var i = 0; i < guessRemaining.length; i++) {
