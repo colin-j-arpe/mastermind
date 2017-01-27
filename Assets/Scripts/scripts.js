@@ -86,6 +86,8 @@ $(document).ready(function () {
 		pickPegs = createColourPicker(colourMenu.val());
 		$("#submit-guess")[0].style.visibility = "hidden";
 		$("#submit-code")[0].style.visibility = "hidden";
+		$("#submit-guess").removeAttr("disabled");
+		$("#submit-code").removeAttr("disabled");
 		footer.style.display = "block";
 		currentCombo.length = widthMenu.val();
 		currentCombo.fill(NaN);
@@ -298,6 +300,8 @@ console.log(combination);
 function Code (width, colours)	{
 console.log(width + ", " +	 colours);
 	this.guess = [];
+	this.newGuess = [];
+	this.sendGuess = false;
 	// this.guess.length = width;
 	this.combination = [];
 	this.results = [];
@@ -310,7 +314,6 @@ console.log(width + ", " +	 colours);
 	// 	anArray.fill(this.S);
 	// 	this.S = anArray;
 	// }
-console.log(this.S);
 
 	this.firstGuess = function ()	{
 console.log("answer is " + this.combination);
@@ -323,61 +326,61 @@ console.log("first guess is " + this.guess);
 
 	this.nextGuess = function (black, white)	{
 		this.results.push(new Array(black, white));
-		var newGuess = [];
-		// newGuess.length = width;
-		// newGuess.fill(0);
-		var sendGuess = false;
-		traversePossibilities(width-1);
-		this.guess = newGuess;
+		this.sendGuess = false;
+		this.traversePossibilities(width-1, this.guess, this.results);
+		this.guess = this.newGuess;
 		return this.guess;
+	}
 
-		function traversePossibilities (i)	{
-			if (i < 0) return;
-			for (var j = 0; j < colours; j++) {
-				newGuess[i] = j;
-				traversePossibilities(i-1);
-				if (sendGuess) return;
-				testResult = evaluate(newGuess);
-				for (var k = 0; k < this.results.length; k++) {
-					if (testResult[0] === this.results[k][0] && testResult[1] === this.results[k][1]) {
-						sendGuess = true;
-						return;
-					}
+	this.traversePossibilities = function (i)	{
+		if (i < 0) return;
+		for (var j = 0; j < colours; j++) {
+			this.newGuess[i] = j;
+			this.traversePossibilities(i-1);
+			if (this.sendGuess) return;
+			testResult = this.evaluate();
+console.log("return " + testResult);
+			for (var k = 0; k < this.results.length; k++) {
+console.log("result " + k + ": " + this.results[k]);
+				if (testResult[0] == this.results[k][0] && testResult[1] == this.results[k][1]) {
+console.log("match");
+					this.sendGuess = true;
+					return;
 				}
-			}
-
-			function evaluate (try)	{
-				var checked = [];
-				checked.fill(false);
-				var tryResults = [0,0];
-				// for (var i = 0; i < width; i++) {
-				// 	checked.push(false);
-				// }
-
-				for (var i = 0; i < width; i++) {
-					if (this.guess[i] === try[i])	{
-						tryResults[0]++;
-						checked[i] = true;
-					}
-				}
-				
-				var guessRemaining = [];
-				var answerRemaining = [];
-				for (var i = 0; i < width; i++) {
-					if (!checked[i])	{
-						guessRemaining.push(this.guess[i]);
-						answerRemaining.push(try[i]);
-					}	
-				}
-				for (var i = 0; i < guessRemaining.length; i++) {
-					match = answerRemaining.indexOf(guessRemaining[i]);
-					if (match >= 0)	{
-						tryResults[1]++;
-						delete answerRemaining[match];
-					}
-				}
-				return tryResults;
 			}
 		}
+
+	}
+	this.evaluate = function ()	{
+		var checked = [];
+		checked.fill(false);
+		var tryResults = [0,0];
+		// for (var i = 0; i < width; i++) {
+		// 	checked.push(false);
+		// }
+
+		for (var i = 0; i < width; i++) {
+			if (this.guess[i] === this.newGuess[i])	{
+				tryResults[0]++;
+				checked[i] = true;
+			}
+		}
+		
+		var guessRemaining = [];
+		var answerRemaining = [];
+		for (var i = 0; i < width; i++) {
+			if (!checked[i])	{
+				guessRemaining.push(this.guess[i]);
+				answerRemaining.push(this.newGuess[i]);
+			}	
+		}
+		for (var i = 0; i < guessRemaining.length; i++) {
+			match = answerRemaining.indexOf(guessRemaining[i]);
+			if (match >= 0)	{
+				tryResults[1]++;
+				delete answerRemaining[match];
+			}
+		}
+		return tryResults;
 	}
 }
