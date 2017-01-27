@@ -263,10 +263,11 @@ console.log(combination);
 
 	this.checkGuess = function (guess)	{
 		var checked = [];
+		checked.fill(false);
 		var results = [0,0];
-		for (var i = 0; i < width; i++) {
-			checked.push(false);
-		}
+		// for (var i = 0; i < width; i++) {
+		// 	checked.push(false);
+		// }
 
 		for (var i = 0; i < width; i++) {
 			if (guess[i] === this.combination[i])	{
@@ -274,7 +275,6 @@ console.log(combination);
 				checked[i] = true;
 			}
 		}
-		// if (results[0] = width) gameWon();
 		
 		var guessRemaining = [];
 		var answerRemaining = [];
@@ -302,14 +302,14 @@ console.log(width + ", " +	 colours);
 	this.combination = [];
 	this.results = [];
 	this.S = [];
-	this.S.length = colours;
-	this.S.fill(true);
-	for (var i = 1; i < width; i++) {
-		var anArray = [];
-		anArray.length = colours;
-		anArray.fill(this.S);
-		this.S = anArray;
-	}
+	// this.S.length = colours;
+	// this.S.fill(true);
+	// for (var i = 1; i < width; i++) {
+	// 	var anArray = [];
+	// 	anArray.length = colours;
+	// 	anArray.fill(this.S);
+	// 	this.S = anArray;
+	// }
 console.log(this.S);
 
 	this.firstGuess = function ()	{
@@ -323,7 +323,61 @@ console.log("first guess is " + this.guess);
 
 	this.nextGuess = function (black, white)	{
 		this.results.push(new Array(black, white));
-console.log("results are " + this.results[0][0] + " black and " + this.results[0][1] + " white");
+		var newGuess = [];
+		// newGuess.length = width;
+		// newGuess.fill(0);
+		var sendGuess = false;
+		traversePossibilities(width-1);
+		this.guess = newGuess;
 		return this.guess;
+
+		function traversePossibilities (i)	{
+			if (i < 0) return;
+			for (var j = 0; j < colours; j++) {
+				newGuess[i] = j;
+				traversePossibilities(i-1);
+				if (sendGuess) return;
+				testResult = evaluate(newGuess);
+				for (var k = 0; k < this.results.length; k++) {
+					if (testResult[0] === this.results[k][0] && testResult[1] === this.results[k][1]) {
+						sendGuess = true;
+						return;
+					}
+				}
+			}
+
+			function evaluate (try)	{
+				var checked = [];
+				checked.fill(false);
+				var tryResults = [0,0];
+				// for (var i = 0; i < width; i++) {
+				// 	checked.push(false);
+				// }
+
+				for (var i = 0; i < width; i++) {
+					if (this.guess[i] === try[i])	{
+						tryResults[0]++;
+						checked[i] = true;
+					}
+				}
+				
+				var guessRemaining = [];
+				var answerRemaining = [];
+				for (var i = 0; i < width; i++) {
+					if (!checked[i])	{
+						guessRemaining.push(this.guess[i]);
+						answerRemaining.push(try[i]);
+					}	
+				}
+				for (var i = 0; i < guessRemaining.length; i++) {
+					match = answerRemaining.indexOf(guessRemaining[i]);
+					if (match >= 0)	{
+						tryResults[1]++;
+						delete answerRemaining[match];
+					}
+				}
+				return tryResults;
+			}
+		}
 	}
 }
