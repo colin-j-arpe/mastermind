@@ -327,7 +327,7 @@ console.log("first guess is " + this.guess);
 	this.nextGuess = function (black, white)	{
 		this.results.push(new Array(black, white));
 		this.sendGuess = false;
-		this.traversePossibilities(width-1, this.guess, this.results);
+		this.traversePossibilities(width-1);
 		this.guess = this.newGuess;
 		return this.guess;
 	}
@@ -339,18 +339,33 @@ console.log("first guess is " + this.guess);
 			this.traversePossibilities(i-1);
 			if (this.sendGuess) return;
 			testResult = this.evaluate();
-console.log("return " + testResult);
-			for (var k = 0; k < this.results.length; k++) {
-console.log("result " + k + ": " + this.results[k]);
-				if (testResult[0] == this.results[k][0] && testResult[1] == this.results[k][1]) {
-console.log("match");
-					this.sendGuess = true;
-					return;
-				}
-			}
+			this.checkResult(testResult, this.results, this.results.length-1);
+			// for (var k = 0; k < this.results.length; k++) {
+			// 	if (testResult[0] == this.results[k][0] && testResult[1] == this.results[k][1]) {
+			// 		this.sendGuess = true;
+			// 		return;
+			// 	}
+			// }
 		}
-
 	}
+
+	this.checkResult = function (test, past, i) {
+		if (i < 0) {
+			this.sendGuess = true;
+console.log("nailed it");
+			return;
+		}
+console.log("testing " + test + " against " + past[i]);
+if (test[0] == past[i][0]) {console.log("true")} else {console.log("false")};
+if (test[1] == past[i][1]) {console.log("true")} else {console.log("false")};
+		if ((test[0] == past[i][0]) && (test[1] == past[i][1])) {
+console.log("yup");
+			this.checkResult(test, past, i-1);
+			return;
+		}
+		return;
+	}
+
 	this.evaluate = function ()	{
 		var checked = [];
 		checked.fill(false);
