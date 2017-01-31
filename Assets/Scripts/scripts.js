@@ -30,7 +30,7 @@ $(document).ready(function () {
 	var thisGame = new Game (0,0);
 
 // Fill menus
-	for (var i = 2; i <= 16; i++) {
+	for (var i = 2; i <= 12; i++) {
 		widthMenu.append("<option value='" + i + "'" + widthDefault(i) + ">" + i + "</option>");
 	}
 	for (var i = 2; i <= 12; i++) {
@@ -188,20 +188,6 @@ $(document).ready(function () {
 			});	
 		}
 	}
-
-	// var nextGuess = [];
-	// for (var i = 0; i < gameWidth; i++) {
-	// 	nextGuess[i] = (-1);
-	// }
-
-
-	// for (let i = 0; i < gameWidth; i++) {
-	// 	$(".guess-menu").eq(i).on("change", function ()	{
-	// 		var colour = $(".guess-menu").eq(i).val();
-	// 		$(".guess-peg").eq(i).attr("background-color", pegColourRGBs[colour]);
-	// 		nextGuess[i] = colour;
-	// 	});
-	// }
 });
 
 function Game (width, colours)	{
@@ -217,7 +203,6 @@ function Game (width, colours)	{
 		for (var i = 0; i < width; i++) {
 			combination[i] = Math.floor(Math.random() * colours);
 		}
-console.log(combination);
 		return combination;
 	}
 	this.combination = this.createNewCombo (width, colours);
@@ -235,7 +220,6 @@ console.log(combination);
 				checked[i] = true;
 			}
 		}
-		// if (results[0] = width) gameWon();
 		
 		var guessRemaining = [];
 		var answerRemaining = [];
@@ -253,20 +237,5 @@ console.log(combination);
 			}
 		}
 		return results;
-	}
-}
-
-function gameWon ()	{
-
-}
-
-function showResult (guess, black, white)	{
-	$("#previous-guesses").append("<div class='guess-row'>");
-	for (var i = 0; i < gameWidth; i++) {
-		$("#previous-guesses").append("<div class='guess-peg' style='background-color: " + pegColourRGBs[guess[i]] + "'></div>");
-	}
-	$("#previous-guesses").append("<div class='result-section'><div class='result-row-black'>");
-	for (var i = 0; i < black.length; i++) {
-		$("#previous-guesses").append("<div")
 	}
 }
