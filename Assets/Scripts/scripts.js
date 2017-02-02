@@ -1,3 +1,4 @@
+// Global variables
 var gameWidth = 4;
 var gameColours = 6;
 var pegColourNames = ["Yellow", "Red", "Green", "Blue", "Black", "White", "Orange", "Purple", "Cyan", "Magenta","Brown", "Pink"];
@@ -42,7 +43,6 @@ $(document).ready(function () {
 	var pickRow = $("#available-colours");
 	var guessButton = $("#submit-guess");
 	var enterButton = $("#submit-code");
-	// var resultsButton = $("#submit-results");
 	var winModal = $("#win-game-modal")[0];
 
 // Fill menus
@@ -70,30 +70,30 @@ $(document).ready(function () {
 	function newGame ()	{
 		game = true;
 		thisGame = new Game (widthMenu.val(), colourMenu.val());
-		resetPage ();
+		resetPage (thisGame.width, thisGame.colours);
 	}
 
 // Begin new code break
 	function newCode ()	{
 		game = false;
 		thisCode = new Code (widthMenu.val(), colourMenu.val());
-		resetPage ();
+		resetPage (thisCode.width, thisCode.colours);
 	}
 
-	function resetPage ()	{
+	function resetPage (width, colours)	{
 		pageBody.html("");
-		$("#combinations-message").text(totalCombinations(widthMenu.val(), colourMenu.val()) + " possible combinations");
-		comboPegs = createBlankGuess(widthMenu.val());
-		pickPegs = createColourPicker(colourMenu.val());
+		$("#combinations-message").text(totalCombinations(width, colours) + " possible combinations");
+		comboPegs = createBlankGuess(width);
+		pickPegs = createColourPicker(colours);
 		$("#submit-guess")[0].style.visibility = "hidden";
 		$("#submit-code")[0].style.visibility = "hidden";
 		$("#submit-guess").removeAttr("disabled");
 		$("#submit-code").removeAttr("disabled");
 		footer.style.display = "block";
-		currentCombo.length = widthMenu.val();
+		currentCombo.length = width;
 		currentCombo.fill(NaN);
 		livePeg = 0;
-		pickListener();
+		pickListener(width);
 	}
 
 	function closeBoard ()	{
@@ -110,13 +110,13 @@ $(document).ready(function () {
 	}
 
 // Live functionality in footer
-	function pickListener ()	{
+	function pickListener (width)	{
 		if (stopBlinking) clearInterval(stopBlinking);
 		stopBlinking = setInterval(blinker, 400);
 		pickPegs.each(function (index) {
 			$(this).on("click", function() {
 				recolourPeg(index);
-				updateCombo(index);
+				updateCombo(width, index);
 			});
 		});
 		comboPegs.each(function (index) {
@@ -148,9 +148,9 @@ $(document).ready(function () {
 		$(".combo-peg")[livePeg].style.backgroundColor = pegColourRGBs[colour];
 	}
 
-	function updateCombo (colour)	{
+	function updateCombo (width, colour)	{
 		currentCombo[livePeg] = colour;
-		livePeg = (livePeg + 1) % comboPegs.length;
+		livePeg = (livePeg + 1) % width;
 		if (!currentCombo.some(isNaN)) {
 			if (game) {
 				$("#submit-guess")[0].style.visibility = "visible";
@@ -175,6 +175,15 @@ $(document).ready(function () {
 
 		if (results[0] === thisGame.combination.length) winGame();
 		clearGuess();
+	}
+
+	function newGuessRow ()	{
+		pageBody.prepend("<div class='prev-guess'></div>")
+		$(".prev-guess").eq(0).append("<div class='guess-number'><h3>" + $(".prev-guess").length + "</h3></div>")
+		for (var i = 0; i < currentCombo.length; i++) {
+			$(".prev-guess").eq(0).append("<div class='peg' style='background-color: " + pegColourRGBs[currentCombo[i]] + "'></div>");
+		}
+		$(".prev-guess").eq(0).append("<div class='guess-results'></div>");
 	}
 
 	function submitCode ()	{
@@ -207,16 +216,6 @@ $(document).ready(function () {
 			if (defaultResults[1] === num) return (" selected");
 		}
 	}
-
-	function newGuessRow ()	{
-		pageBody.prepend("<div class='prev-guess'></div>")
-		$(".prev-guess").eq(0).append("<div class='guess-number'><h3>" + $(".prev-guess").length + "</h3></div>")
-		for (var i = 0; i < currentCombo.length; i++) {
-			$(".prev-guess").eq(0).append("<div class='peg' style='background-color: " + pegColourRGBs[currentCombo[i]] + "'></div>");
-		}
-		$(".prev-guess").eq(0).append("<div class='guess-results'></div>");
-	}
-
 
 // Fill out footer row content
 	function createBlankGuess (num)	{
@@ -262,7 +261,13 @@ $(document).ready(function () {
 });	// end of document ready section
 
 function Game (width, colours)	{
-	this.createNewCombo = function (width, colours)	{
+	this.width = width;
+	this.colours = colours;
+	this.createNewCombo = createNewCombo;
+	this.combination = this.createNewCombo (width, colours);
+	this.checkGuess = checkGuess;
+
+	function createNewCombo (width, colours)	{
 		var combination = [];
 		for (var i = 0; i < width; i++) {
 			combination[i] = Math.floor(Math.random() * colours);
@@ -270,16 +275,12 @@ function Game (width, colours)	{
 console.log(combination);
 		return combination;
 	}
-	this.combination = this.createNewCombo (width, colours);
 
-	this.checkGuess = function (guess)	{
+	function checkGuess (guess)	{
 		var checked = [];
-		checked.fill(false);
 		var results = [0,0];
-		// for (var i = 0; i < width; i++) {
-		// 	checked.push(false);
-		// }
 
+		// Count black pegs
 		for (var i = 0; i < width; i++) {
 			if (guess[i] === this.combination[i])	{
 				results[0]++;
@@ -287,6 +288,7 @@ console.log(combination);
 			}
 		}
 		
+		// Count white pegs
 		var guessRemaining = [];
 		var answerRemaining = [];
 		for (var i = 0; i < width; i++) {
@@ -302,38 +304,34 @@ console.log(combination);
 				delete answerRemaining[match];
 			}
 		}
+		
 		return results;
 	}
 }
 
 function Code (width, colours)	{
-// console.log(width + ", " +	 colours);
+	// Variables
+	this.width = width;
+	this.colours = colours;
 	this.guesses = [];
 	this.newGuess = [];
 	this.sendGuess = false;
-	// this.guess.length = width;
 	this.combination = [];
 	this.results = [];
-	this.S = [];
-	// this.S.length = colours;
-	// this.S.fill(true);
-	// for (var i = 1; i < width; i++) {
-	// 	var anArray = [];
-	// 	anArray.length = colours;
-	// 	anArray.fill(this.S);
-	// 	this.S = anArray;
-	// }
 	var startHere = [];
 	startHere.length = width;
 	startHere.fill(false);
+	// Functions
+	this.firstGuess = firstGuess;
+	this.nextGuess = nextGuess;
+	this.traversePossibilities = traversePossibilities;
+	this.checkResult = checkResult;
+	this.evaluate = evaluate;
 
-	this.firstGuess = function ()	{
-// console.log("answer is " + this.combination);
+	function firstGuess ()	{
 		for (var i = 0; i < width; i++) {
 			this.newGuess.push(i % colours);
 		}
-// console.log("first guess is " + this.newGuess);
-		// this.guesses.push(this.newGuess);
 		this.guesses.push(new Array);
 		for (var i = 0; i < width; i++) {
 			this.guesses[this.guesses.length-1][i] = this.newGuess[i]
@@ -341,8 +339,7 @@ function Code (width, colours)	{
 		return this.newGuess;
 	}
 
-	this.nextGuess = function (black, white)	{
-// console.log("thisguess is " + this.guesses[this.guesses.length-1] + ", newguess is " + this.newGuess);
+	function nextGuess (black, white)	{
 		this.results.push(new Array(black, white));
 		this.sendGuess = false;
 		this.traversePossibilities(width-1);
@@ -351,12 +348,10 @@ function Code (width, colours)	{
 			this.guesses[this.guesses.length-1][i] = this.newGuess[i]
 		}
 		startHere.fill(true);
-// console.log("now returning guess of " + this.newGuess);
 		return this.newGuess;
 	}
 
-	this.traversePossibilities = function (i)	{
-// if (this.sendGuess) console.log("returning from level " + i);
+	function traversePossibilities (i)	{
 		if (i < 0 || this.sendGuess) return;
 		for (var j = 0; j < colours; j++) {
 			if (startHere[i]) {
@@ -364,50 +359,30 @@ function Code (width, colours)	{
 				startHere[i] = false;
 			}
 			this.newGuess[i] = j;
-// console.log("newguess is now " + this.newGuess);
 			this.traversePossibilities(i-1);
-// if (this.sendGuess) console.log("returning from level " + i);
 			if (this.sendGuess) return;
-			// testResult = this.evaluate();
 			this.checkResult(this.results.length-1);
 			if (this.sendGuess) return;
-// console.log("sendguess is " + this.sendGuess);
-			// for (var k = 0; k < this.results.length; k++) {
-			// 	if (testResult[0] == this.results[k][0] && testResult[1] == this.results[k][1]) {
-			// 		this.sendGuess = true;
-			// 		return;
-			// 	}
-			// }
 		}
 	}
 
-	this.checkResult = function (i) {
-// console.log("check level " + i);
+	function checkResult (i) {
 		if (i < 0) {
 			this.sendGuess = true;
-// console.log("nailed it");
 			return;
 		}
 		var testResult = this.evaluate(this.guesses[i], this.newGuess);
-// console.log("testing " + testResult + " against " + this.results[i]);
-// if (test[0] == past[i][0]) {console.log("true")} else {console.log("false")};
-// if (test[1] == past[i][1]) {console.log("true")} else {console.log("false")};
 		if ((testResult[0] == this.results[i][0]) && (testResult[1] == this.results[i][1])) {
-// console.log("yup");
 			this.checkResult(i-1);
 			return;
 		}
 		return;
 	}
 
-	this.evaluate = function (oldGuess, currentGuess)	{
-// console.log("evaluating " + oldGuess + " against " + currentGuess);
+	function evaluate (oldGuess, currentGuess)	{
 		var checked = [];
 		checked.fill(false);
 		var tryResults = [0,0];
-		// for (var i = 0; i < width; i++) {
-		// 	checked.push(false);
-		// }
 
 		for (var i = 0; i < width; i++) {
 			if (oldGuess[i] === currentGuess[i])	{
@@ -416,7 +391,6 @@ function Code (width, colours)	{
 			}
 		}
 		
-// console.log(tryResults[0] + " black pegs");
 		var guessRemaining = [];
 		var answerRemaining = [];
 		for (var i = 0; i < width; i++) {
@@ -432,7 +406,6 @@ function Code (width, colours)	{
 				delete answerRemaining[match];
 			}
 		}
-// console.log(tryResults[1] + " white pegs");
 		return tryResults;
 	}
 }
