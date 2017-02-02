@@ -31,19 +31,20 @@ function totalCombinations (width, colours)	{
 
 $(document).ready(function () {
 // DOM referents
-	var widthMenu = $("#width-menu");
-	var colourMenu = $("#colour-menu");
-	var instModal = $("#instruc-modal")[0];
-	var instButton = $("#open-instructions");
-	var newButton = $("#new-game-button");
-	var codeButton = $("#enter-code-button");
-	var pageBody = $("#previous-guesses");
-	var footer = $("#page-footer")[0];
-	var comboRow = $("#current-combo");
-	var pickRow = $("#available-colours");
-	var guessButton = $("#submit-guess");
-	var enterButton = $("#submit-code");
-	var winModal = $("#win-game-modal")[0];
+	var widthMenu = 	$("#width-menu");
+	var colourMenu = 	$("#colour-menu");
+	var instModal = 	$("#instruc-modal")[0];
+	var instButton = 	$("#open-instructions");
+	var newButton = 	$("#new-game-button");
+	var codeButton = 	$("#enter-code-button");
+	var comboMessage = 	$("#combinations-message");
+	var pageBody = 		$("#previous-guesses");
+	var footer = 		$("#page-footer")[0];
+	var comboRow = 		$("#current-combo");
+	var pickRow = 		$("#available-colours");
+	var guessButton = 	$("#submit-guess");
+	var enterButton = 	$("#submit-code");
+	var winModal = 		$("#win-game-modal")[0];
 
 // Fill menus
 	for (var i = 2; i <= 16; i++) {
@@ -82,13 +83,13 @@ $(document).ready(function () {
 
 	function resetPage (width, colours)	{
 		pageBody.html("");
-		$("#combinations-message").text(totalCombinations(width, colours) + " possible combinations");
+		comboMessage.text(totalCombinations(width, colours) + " possible combinations");
 		comboPegs = createBlankGuess(width);
 		pickPegs = createColourPicker(colours);
-		$("#submit-guess")[0].style.visibility = "hidden";
-		$("#submit-code")[0].style.visibility = "hidden";
-		$("#submit-guess").removeAttr("disabled");
-		$("#submit-code").removeAttr("disabled");
+		guessButton[0].style.visibility = "hidden";
+		enterButton[0].style.visibility = "hidden";
+		guessButton.removeAttr("disabled");
+		enterButton.removeAttr("disabled");
 		footer.style.display = "block";
 		currentCombo.length = width;
 		currentCombo.fill(NaN);
@@ -105,8 +106,8 @@ $(document).ready(function () {
 		$(".pick-peg").each(function() {
 			$(this).off("click");
 		});
-		$("#submit-guess").attr("disabled", true);
-		$("#submit-code").attr("disabled", true);
+		guessButton.attr("disabled", true);
+		enterButton.attr("disabled", true);
 	}
 
 // Live functionality in footer
@@ -153,9 +154,9 @@ $(document).ready(function () {
 		livePeg = (livePeg + 1) % width;
 		if (!currentCombo.some(isNaN)) {
 			if (game) {
-				$("#submit-guess")[0].style.visibility = "visible";
+				guessButton[0].style.visibility = "visible";
 			}	else	{
-				$("#submit-code")[0].style.visibility = "visible";
+				enterButton[0].style.visibility = "visible";
 			}
 		}
 	}
@@ -240,7 +241,7 @@ $(document).ready(function () {
 		});
 		livePeg = 0;
 		currentCombo.fill(NaN);
-		$("#submit-guess")[0].style.visibility = "hidden";
+		guessButton[0].style.visibility = "hidden";
 	}
 
 	function winGame ()	{
@@ -255,8 +256,6 @@ $(document).ready(function () {
 		$(".close-button").eq(1).on("click", function () {
 			winModal.style.display = "none";
 		});
-
-
 	}
 });	// end of document ready section
 
