@@ -1,8 +1,8 @@
 // Global variables
 var gameWidth = 4;
 var gameColours = 6;
-var pegColourNames = ["Yellow", "Red", "Green", "Blue", "Black", "White", "Orange", "Purple", "Cyan", "Magenta","Brown", "Pink"];
-var pegColourRGBs = ["#ffff00", "#ff0000", "#00ff00", "#0000ff", "#000000", "#ffffff", "#ff8800", "#880088", "#00ffff", "#ff00ff", "#994400", "#ffaaaa"];
+var pegColourNames = ["Yellow", "Red", 		"Green", 	"Blue",	 "Black", 	"White", 	"Orange", "Purple", 	"Cyan", "Magenta",	"Brown", 	"Pink"];
+var pegColourRGBs = ["#ffff00", "#ff0000", "#00ff00", "#0000ff", "#000000", "#ffffff", "#ffaa22", "#880088", "#00ffff", "#dd00dd", "#994400", "#ffaaaa"];
 var thisGame;
 var thisCode;
 var game = true;
@@ -129,6 +129,11 @@ $(document).ready(function () {
 					$(".combo-peg").eq(livePeg)[0].style.backgroundColor = pegColourRGBs[currentCombo[livePeg]];
 				}
 				livePeg = index;
+			});
+			$(this).on("dblclick", function()	{
+				$(".combo-peg").eq(livePeg)[0].style.backgroundColor = "#bbbbbb";
+				livePeg = index;
+				currentCombo[livePeg] = NaN;
 			});
 		});
 	}
