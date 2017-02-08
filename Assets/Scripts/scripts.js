@@ -3,7 +3,7 @@ var defaultWidth = 4;
 var defaultColours = 6;
 var maxWidth = 16;
 var pegColourNames = ["Yellow", "Red", 		"Green", 	"Blue",	 "Black", 	"White", 	"Orange", "Purple", 	"Cyan", "Magenta",	"Brown", 	"Pink"];
-var pegColourRGBs = ["#ffff00", "#ff0000", "#00ff00", "#0000ff", "#000000", "#ffffff", "#ffaa22", "#880088", "#00ffff", "#dd00dd", "#994400", "#ffaaaa"];
+var pegColourRGBs = ["#ffff00", "#dd0000", "#00ff00", "#0000ff", "#000000", "#ffffff", "#ff9911", "#660066", "#00ffff", "#ee11ee", "#994400", "#ffaaaa"];
 var consoleLogCombo = true;
 
 // Global variables
@@ -82,7 +82,7 @@ $(document).ready(function () {
 
 	function newCode ()	{
 		game = false;
-		thisCode = new Code (widthMenu.val(), colourMenu.val());	// Line 331
+		thisCode = new Code (widthMenu.val(), colourMenu.val());	// Line 332
 		resetPage (thisCode.width, thisCode.colours);				// Line 90
 	}
 
@@ -246,7 +246,7 @@ $(document).ready(function () {
 	function submitCode ()	{
 		closeBoard();							// Line 232
 		thisCode.combination = currentCombo;
-		currentCombo = thisCode.firstGuess();	// Line 351
+		currentCombo = thisCode.firstGuess();	// Line 355
 		results = [];
 		showNextResult();						// Line 254
 	}
@@ -254,7 +254,8 @@ $(document).ready(function () {
 	function showNextResult()	{
 		newGuessRow();														// Line 201
 		$(".guess-results").eq(0).append("<div class='black-peg-row'></div><div class='white-peg-row'></div>");
-		results = thisCode.evaluate(currentCombo, thisCode.combination);	// Line 406
+		results = thisCode.evaluate(currentCombo, thisCode.combination);	// Line 416
+
 		for (var i = 0; i < results[0]; i++) {
 			$(".black-peg-row").eq(0).append("<div class='result-peg black-peg'></div>");
 		}
@@ -265,7 +266,7 @@ $(document).ready(function () {
 			solveCode();													// Line 273
 			return;
 		}	else	{
-			currentCombo = thisCode.nextGuess(results[0], results[1]);		// Line 362
+			currentCombo = thisCode.nextGuess(results[0], results[1]);		// Line 366
 			showNextResult();												// Line 254 (recursive)
 		}
 	}
@@ -341,12 +342,15 @@ function Code (width, colours)	{
 	var startHere = [];
 	startHere.length = width;
 	startHere.fill(false);
+	var skipColour = [];
+	skipColour.length = colours;
+	skipColour.fill(false);
 // Functions
-	this.firstGuess = firstGuess;							// Line 351
-	this.nextGuess = nextGuess;								// Line 362
-	this.traversePossibilities = traversePossibilities;		// Line 375
-	this.checkResult = checkResult;							// Line 391
-	this.evaluate = evaluate;								// Line 406
+	this.firstGuess = firstGuess;							// Line 355
+	this.nextGuess = nextGuess;								// Line 366
+	this.traversePossibilities = traversePossibilities;		// Line 384
+	this.checkResult = checkResult;							// Line 401
+	this.evaluate = evaluate;								// Line 416
 
 	function firstGuess ()	{
 		for (var i = 0; i < width; i++) {
@@ -360,9 +364,14 @@ function Code (width, colours)	{
 	}
 
 	function nextGuess (black, white)	{
+		if (black == 0 && white == 0) {
+			for (var i = 0; i < this.newGuess.length; i++) {
+				skipColour[this.newGuess[i]] = true;
+			}
+		}
 		this.results.push(new Array(black, white));
 		this.sendGuess = false;
-		this.traversePossibilities(width-1);				// Line 375
+		this.traversePossibilities(width-1);				// Line 384
 		this.guesses.push(new Array);
 		for (var i = 0; i < width; i++) {
 			this.guesses[this.guesses.length-1][i] = this.newGuess[i]
@@ -379,10 +388,11 @@ function Code (width, colours)	{
 				j = this.newGuess[i];
 				startHere[i] = false;
 			}
+			if (skipColour[j]) j++;
 			this.newGuess[i] = j;
-			this.traversePossibilities(i-1);			// Line 375 (recursive)
+			this.traversePossibilities(i-1);			// Line 384 (recursive)
 			if (this.sendGuess) return;
-			this.checkResult(this.results.length-1);	// Line 391
+			this.checkResult(this.results.length-1);	// Line 401
 			if (this.sendGuess) return;
 		}
 	}
@@ -393,10 +403,10 @@ function Code (width, colours)	{
 			this.sendGuess = true;
 			return;
 		}
-		var testResult = this.evaluate(this.guesses[i], this.newGuess);							// Line 406
+		var testResult = this.evaluate(this.guesses[i], this.newGuess);						// Line 416
 		this.combosChecked++;
 		if ((testResult[0] == this.results[i][0]) && (testResult[1] == this.results[i][1])) {
-			this.checkResult(i-1);																// Line 391 (recursive)
+			this.checkResult(i-1);															// Line 401 (recursive)
 			return;
 		}
 		return;
