@@ -15,7 +15,7 @@ body {
   width: 14.4px;
   height: 14.4px;
   border: 2px solid #59260B;
-  margin: 0 4px;
+  margin: 1px 4px;
   display: inline-flex; }
 
 .black-peg {
@@ -61,7 +61,8 @@ body {
       text-align: center;
       font-weight: bolder; }
   #previous-guesses .guess-results {
-    display: inline-flex; }
+    display: inline-block;
+    flex-direction: column; }
     #previous-guesses .guess-results .black-peg-row {
       display: block; }
     #previous-guesses .guess-results .white-peg-row {

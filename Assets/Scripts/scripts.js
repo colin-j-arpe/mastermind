@@ -45,6 +45,7 @@ $(document).ready(function () {
 	var guessButton = 	$("#submit-guess");
 	var enterButton = 	$("#submit-code");
 	var winModal = 		$("#win-game-modal")[0];
+	var solveModal =	$("#solve-code-modal")[0];
 
 // Fill menus
 	for (var i = 2; i <= 16; i++) {
@@ -191,31 +192,56 @@ $(document).ready(function () {
 		closeBoard();
 		thisCode.combination = currentCombo;
 		currentCombo = thisCode.firstGuess();
+		results = [];
 		resultRow();
 	}
 
 	function submitResults ()	{
-		$(".submit-results").eq(0).attr("disabled", true);
-		currentCombo = thisCode.nextGuess($(".black-peg-menu").eq(0).val(), $(".white-peg-menu").eq(0).val());
+if (results[0] == thisCode.width) return;
+if ($(".prev-guess").length > 20) return;
+console.log(thisCode.combosChecked + " checks performed");
+// console.log("now checking guess " + $(".prev-guess").length);
+		// $(".submit-results").eq(0).attr("disabled", true);
+		currentCombo = thisCode.nextGuess(results[0], results[1]);
 		resultRow();
 	}
 
 	function resultRow ()	{
+if (results[0] == thisCode.width) return;
 		newGuessRow();
-		$(".guess-results").eq(0).append("Black pegs (exact matches): <select class='black-peg-menu'></select>  White pegs (right colour, wrong place): <select class='white-peg-menu'></select> <button class='submit-results'>Submit Results</button>");
-		defaultResults = thisCode.evaluate(currentCombo, thisCode.combination);
-		for (var i = 0; i <= comboPegs.length; i++) {
-			$(".black-peg-menu").eq(0).append("<option" + blackDefault(i) + ">" + i + "</option>");
-			$(".white-peg-menu").eq(0).append("<option" + whiteDefault(i) + ">" + i + "</option>");
+		// $(".guess-results").eq(0).append("Black pegs (exact matches): <select class='black-peg-menu'></select>  White pegs (right colour, wrong place): <select class='white-peg-menu'></select> <button class='submit-results'>Submit Results</button>");
+		$(".guess-results").eq(0).append("<div class='black-peg-row'></div><div class='white-peg-row'></div>");
+		
+		// defaultResults = thisCode.evaluate(currentCombo, thisCode.combination);
+		results = thisCode.evaluate(currentCombo, thisCode.combination);
+		for (var i = 0; i < results[0]; i++) {
+			$(".black-peg-row").eq(0).append("<div class='result-peg black-peg'></div>");
 		}
-		$(".submit-results").eq(0).on("click", submitResults);
+		for (var i = 0; i < results[1]; i++) {
+			$(".white-peg-row").eq(0).append("<div class='result-peg white-peg'></div>");
+		}
+// console.log("results[0] is " + results[0] + ", thisCode.width is " + thisCode.width);
+		// results.fill(NaN);
+		if (results[0] == thisCode.width)	{
+console.log("running solveCode");
+			solveCode();
+			return;
+		}	else	{
+			setTimeout(submitResults(), 5000);
+		}
 
-		function blackDefault (num)	{
-			if (defaultResults[0] === num) return (" selected");
-		}
-		function whiteDefault (num)	{
-			if (defaultResults[1] === num) return (" selected");
-		}
+		// for (var i = 0; i <= comboPegs.length; i++) {
+		// 	$(".black-peg-menu").eq(0).append("<option" + blackDefault(i) + ">" + i + "</option>");
+		// 	$(".white-peg-menu").eq(0).append("<option" + whiteDefault(i) + ">" + i + "</option>");
+		// }
+		// $(".submit-results").eq(0).on("click", submitResults);
+
+		// function blackDefault (num)	{
+		// 	if (defaultResults[0] === num) return (" selected");
+		// }
+		// function whiteDefault (num)	{
+		// 	if (defaultResults[1] === num) return (" selected");
+		// }
 	}
 
 // Fill out footer row content
@@ -246,15 +272,25 @@ $(document).ready(function () {
 
 	function winGame ()	{
 		closeBoard();
-		var width = $(".combo-peg").length;
-		var colours = $(".pick-peg").length;
-		$("#win-width").text(width.toString());
-		$("#win-colours").text(colours.toString());
-		$("#win-combos").text(totalCombinations(width, colours));
+		// var width = $(".combo-peg").length;
+		// var colours = $(".pick-peg").length;
+		$("#win-width").text(thisGame.width.toString());
+		$("#win-colours").text(thisGame.colours.toString());
+		$("#win-combos").text(totalCombinations(thisGame.width, thisGame.colours));
 		$("#win-guesses").text($(".prev-guess").length.toString());
 		winModal.style.display = "block";
 		$(".close-button").eq(1).on("click", function () {
 			winModal.style.display = "none";
+		});
+	}
+
+	function solveCode ()	{
+		$("#solve-guesses").text($(".prev-guess").length.toString());
+		$("#solve-checks").text(thisCode.combosChecked.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+		$("#solve-combos").text(totalCombinations(thisCode.width, thisCode.colours));
+		solveModal.style.display = "block";
+		$(".close-button").eq(2).on("click", function () {
+			solveModal.style.display = "none";
 		});
 	}
 });	// end of document ready section
@@ -303,7 +339,6 @@ console.log(combination);
 				delete answerRemaining[match];
 			}
 		}
-		
 		return results;
 	}
 }
@@ -317,6 +352,7 @@ function Code (width, colours)	{
 	this.sendGuess = false;
 	this.combination = [];
 	this.results = [];
+	this.combosChecked = 0;
 	var startHere = [];
 	startHere.length = width;
 	startHere.fill(false);
@@ -361,6 +397,7 @@ function Code (width, colours)	{
 			this.traversePossibilities(i-1);
 			if (this.sendGuess) return;
 			this.checkResult(this.results.length-1);
+			this.combosChecked++;
 			if (this.sendGuess) return;
 		}
 	}
