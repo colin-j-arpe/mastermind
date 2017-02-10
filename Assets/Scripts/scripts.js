@@ -252,6 +252,7 @@ $(document).ready(function () {
 	}
 
 	function showNextResult()	{
+if ($(".prev-guess").length > 24) return;
 		newGuessRow();														// Line 201
 		$(".guess-results").eq(0).append("<div class='black-peg-row'></div><div class='white-peg-row'></div>");
 		results = thisCode.evaluate(currentCombo, thisCode.combination);	// Line 416
@@ -345,6 +346,9 @@ function Code (width, colours)	{
 	var skipColour = [];
 	skipColour.length = colours;
 	skipColour.fill(false);
+	var dontCheck = false;
+	var firstResult = true;
+	var alwaysContain = [];
 // Functions
 	this.firstGuess = firstGuess;							// Line 355
 	this.nextGuess = nextGuess;								// Line 366
@@ -353,8 +357,11 @@ function Code (width, colours)	{
 	this.evaluate = evaluate;								// Line 416
 
 	function firstGuess ()	{
-		for (var i = 0; i < width; i++) {
-			this.newGuess.push(i % colours);
+		for (var i = 0; i < width; i=i+2) {
+			this.newGuess.push((colours-1) - ((i/2)%colours));
+			if (i+1 < width) {
+				this.newGuess.push((colours-1) - ((i/2)%colours));
+			}
 		}
 		this.guesses.push(new Array);
 		for (var i = 0; i < width; i++) {
@@ -365,9 +372,28 @@ function Code (width, colours)	{
 
 	function nextGuess (black, white)	{
 		if (black == 0 && white == 0) {
-			for (var i = 0; i < this.newGuess.length; i++) {
+			for (var i = 0; i < this.width; i++) {
 				skipColour[this.newGuess[i]] = true;
+console.log("removing " + pegColourNames[this.newGuess[i]]);
 			}
+		}
+		if (black + white == this.width)	{
+			for (var i = 0; i < this.colours; i++) {
+				if (this.newGuess.indexOf(i) < 0) {
+					skipColour[i] = true;
+console.log("removing " + pegColourNames[i]);
+				}
+			}
+		}
+		if (firstResult)	{
+			if (black + white > 0)	{
+				for (var i = 0; i < this.width; i++) {
+					if (alwaysContain.indexOf(this.newGuess[i]) < 0) {
+						alwaysContain.push(this.newGuess[i]);
+					}
+				}
+			}
+			firstResult = false;
 		}
 		this.results.push(new Array(black, white));
 		this.sendGuess = false;
@@ -382,19 +408,33 @@ function Code (width, colours)	{
 
 // Recursively traverse dynamically multidimensional array to check every possible combination
 	function traversePossibilities (i)	{
+console.log(i);
 		if (i < 0 || this.sendGuess) return;
 		for (var j = 0; j < colours; j++) {
 			if (startHere[i]) {
 				j = this.newGuess[i];
 				startHere[i] = false;
 			}
-			if (skipColour[j]) j++;
 			this.newGuess[i] = j;
 			this.traversePossibilities(i-1);			// Line 384 (recursive)
 			if (this.sendGuess) return;
-			this.checkResult(this.results.length-1);	// Line 401
-			if (this.sendGuess) return;
+			dontCheck = true;
+			for (var i = 0; i < alwaysContain.length; i++) {
+				if (this.newGuess.indexOf(alwaysContain[i]) > -1) dontCheck = false;
+			}
+			for (var k = 0; k < this.width; k++) {
+				if (skipColour[this.newGuess[k]]) {
+					dontCheck = true;
+// console.log("contains " + pegColourNames[this.newGuess[k]] + ", not checking");
+				}
+			}
+			if (!dontCheck) {
+				this.checkResult(this.results.length-1);	// Line 401
+				if (this.sendGuess) return;
+			}	else	{
+			}
 		}
+// console.log("colour loop ended for peg " + i);
 	}
 
 // Check current possibility against each past result
