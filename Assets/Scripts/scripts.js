@@ -252,6 +252,7 @@ $(document).ready(function () {
 	}
 
 	function showNextResult()	{
+// if ($(".prev-guess").length > 9) return;
 		newGuessRow();														// Line 201
 		$(".guess-results").eq(0).append("<div class='black-peg-row'></div><div class='white-peg-row'></div>");
 		results = thisCode.evaluate(currentCombo, thisCode.combination);	// Line 416
@@ -342,9 +343,22 @@ function Code (width, colours)	{
 	var startHere = [];
 	startHere.length = width;
 	startHere.fill(false);
+	// var skipColourEachPeg = [];
+	// skipColourEachPeg.length = colours;
+	// skipColourEachPeg.fill(false);
+	// var skipColour = [];
+	// skipColour.length = width;
+	// skipColour.fill(skipColourEachPeg);
 	var skipColour = [];
-	skipColour.length = colours;
-	skipColour.fill(false);
+	for (var i = 0; i < width; i++) {
+		skipColour[i] = [];
+		for (var j = 0; j < colours; j++) {
+			skipColour[i][j] = false
+		}
+	}
+// console.log(skipColour);
+// console.log(skipColour.toString());
+
 // Functions
 	this.firstGuess = firstGuess;							// Line 355
 	this.nextGuess = nextGuess;								// Line 366
@@ -353,8 +367,11 @@ function Code (width, colours)	{
 	this.evaluate = evaluate;								// Line 416
 
 	function firstGuess ()	{
-		for (var i = 0; i < width; i++) {
-			this.newGuess.push(i % colours);
+		for (var i = 0; i < width; i = i + 2) {
+			this.newGuess.push((colours - 1) - ((i / 2) % colours));
+			if (i + 1 < width) {
+				this.newGuess.push((colours - 1) - ((i / 2) % colours));
+			}
 		}
 		this.guesses.push(new Array);
 		for (var i = 0; i < width; i++) {
@@ -364,13 +381,41 @@ function Code (width, colours)	{
 	}
 
 	function nextGuess (black, white)	{
+// console.log(this.newGuess.toString());
 		if (black == 0 && white == 0) {
-			for (var i = 0; i < this.newGuess.length; i++) {
-				skipColour[this.newGuess[i]] = true;
+// console.log("starting no peg function");
+			for (var i = 0; i < width; i++) {
+				for (var j = 0; j < width; j++) {
+					skipColour[j][this.newGuess[i]] = true;
+// console.log(pegColourNames[this.newGuess[i]] + " has been removed from peg " + j);
+// console.log("peg " + j + " is now " + skipColour[j]);
+// console.log(skipColour.toString());
+				}
 			}
 		}
+		if (black == 0 && white > 0)	{
+// console.log("starting only white function");
+			for (var i = 0; i < width; i++) {
+				skipColour[i][this.newGuess[i]] = true;
+// console.log(pegColourNames[this.newGuess[i]] + " has been removed from peg " + i);
+// console.log("peg " + i + " is now " + skipColour[i].toString());
+			}
+		}
+		if (black + white == width)	{
+// console.log("starting four peg function");
+			for (var i = 0; i < colours; i++) {
+				if (this.newGuess.indexOf(i) < 0) {
+					for (var j = 0; j < width; j++) {
+						skipColour[j][i] = true;
+// console.log(pegColourNames[i] + " has been removed from peg " + j);
+// console.log("peg " + j + " is now " + skipColour[j].toString());
+					}
+				}
+			}
+		}
+// console.log(skipColour.toString());
 		this.results.push(new Array(black, white));
-		this.sendGuess = false;
+		this.sendGuess = false
 		this.traversePossibilities(width-1);				// Line 384
 		this.guesses.push(new Array);
 		for (var i = 0; i < width; i++) {
@@ -388,7 +433,9 @@ function Code (width, colours)	{
 				j = this.newGuess[i];
 				startHere[i] = false;
 			}
-			if (skipColour[j]) j++;
+			if (skipColour[i][j]) {
+// console.log("skipping " + pegColourNames[j] + " in peg " + i);
+				continue};
 			this.newGuess[i] = j;
 			this.traversePossibilities(i-1);			// Line 384 (recursive)
 			if (this.sendGuess) return;
