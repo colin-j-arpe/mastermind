@@ -252,7 +252,7 @@ $(document).ready(function () {
 	}
 
 	function showNextResult()	{
-if ($(".prev-guess").length > 24) return;
+if ($(".prev-guess").length > 12) return;
 		newGuessRow();														// Line 201
 		$(".guess-results").eq(0).append("<div class='black-peg-row'></div><div class='white-peg-row'></div>");
 		results = thisCode.evaluate(currentCombo, thisCode.combination);	// Line 416
@@ -346,9 +346,6 @@ function Code (width, colours)	{
 	var skipColour = [];
 	skipColour.length = colours;
 	skipColour.fill(false);
-	var dontCheck = false;
-	var firstResult = true;
-	var alwaysContain = [];
 // Functions
 	this.firstGuess = firstGuess;							// Line 355
 	this.nextGuess = nextGuess;								// Line 366
@@ -374,26 +371,14 @@ function Code (width, colours)	{
 		if (black == 0 && white == 0) {
 			for (var i = 0; i < this.width; i++) {
 				skipColour[this.newGuess[i]] = true;
-console.log("removing " + pegColourNames[this.newGuess[i]]);
 			}
 		}
 		if (black + white == this.width)	{
 			for (var i = 0; i < this.colours; i++) {
 				if (this.newGuess.indexOf(i) < 0) {
 					skipColour[i] = true;
-console.log("removing " + pegColourNames[i]);
 				}
 			}
-		}
-		if (firstResult)	{
-			if (black + white > 0)	{
-				for (var i = 0; i < this.width; i++) {
-					if (alwaysContain.indexOf(this.newGuess[i]) < 0) {
-						alwaysContain.push(this.newGuess[i]);
-					}
-				}
-			}
-			firstResult = false;
 		}
 		this.results.push(new Array(black, white));
 		this.sendGuess = false;
@@ -408,44 +393,37 @@ console.log("removing " + pegColourNames[i]);
 
 // Recursively traverse dynamically multidimensional array to check every possible combination
 	function traversePossibilities (i)	{
-console.log(i);
 		if (i < 0 || this.sendGuess) return;
 		for (var j = 0; j < colours; j++) {
 			if (startHere[i]) {
 				j = this.newGuess[i];
 				startHere[i] = false;
+				this.traversePossibilities(i-1);			// Line 384 (recursive)
 			}
 			this.newGuess[i] = j;
+			if (skipColour[j]) {
+// console.log("skipping " + this.newGuess + " because skipColour " + pegColourNames[j] + " is " + skipColour[j]);
+				continue;
+			};
 			this.traversePossibilities(i-1);			// Line 384 (recursive)
 			if (this.sendGuess) return;
-			dontCheck = true;
-			for (var i = 0; i < alwaysContain.length; i++) {
-				if (this.newGuess.indexOf(alwaysContain[i]) > -1) dontCheck = false;
-			}
-			for (var k = 0; k < this.width; k++) {
-				if (skipColour[this.newGuess[k]]) {
-					dontCheck = true;
-// console.log("contains " + pegColourNames[this.newGuess[k]] + ", not checking");
-				}
-			}
-			if (!dontCheck) {
-				this.checkResult(this.results.length-1);	// Line 401
-				if (this.sendGuess) return;
-			}	else	{
-			}
+			this.checkResult(this.results.length-1);	// Line 401
+			if (this.sendGuess) return;
 		}
-// console.log("colour loop ended for peg " + i);
 	}
 
 // Check current possibility against each past result
 	function checkResult (i) {
 		if (i < 0) {
+// console.log(this.newGuess + " looks good");
 			this.sendGuess = true;
 			return;
 		}
+// console.log("testing " + this.guesses[i] + " against " + this.newGuess);
 		var testResult = this.evaluate(this.guesses[i], this.newGuess);						// Line 416
 		this.combosChecked++;
 		if ((testResult[0] == this.results[i][0]) && (testResult[1] == this.results[i][1])) {
+// console.log(this.newGuess + " passes " + this.guesses[i]);
 			this.checkResult(i-1);															// Line 401 (recursive)
 			return;
 		}
@@ -479,6 +457,7 @@ console.log(i);
 				delete answerRemaining[match];
 			}
 		}
+// console.log("returning " + tryResults + " for " + currentGuess);
 		return tryResults;
 	}
 }
