@@ -355,9 +355,9 @@ function Code (width, colours)	{
 // Functions
 	this.firstGuess = firstGuess;							// Line 362
 	this.nextGuess = nextGuess;								// Line 376
-	this.traversePossibilities = traversePossibilities;		// Line 384
-	this.checkResult = checkResult;							// Line 401
-	this.evaluate = evaluate;								// Line 416
+	this.traversePossibilities = traversePossibilities;		// Line 385
+	this.checkResult = checkResult;							// Line 402
+	this.evaluate = evaluate;								// Line 417
 
 	function firstGuess ()	{
 		for (var i = 0; i < width; i = i + 2) {
@@ -375,13 +375,14 @@ function Code (width, colours)	{
 
 	function nextGuess (black, white)	{
 	// Fill skipColour array to save future guess checks
-		if (black == 0 && white == 0) noPegs();				// Line 392
-		if (black == 0 && white > 0) whitePegsOnly();		// Line 399
-		if (black + white == width)	fullWidth();			// Line 404
+		self = this;
+		if (black == 0 && white == 0) noPegs();				// Line 393
+		if (black == 0 && white > 0) whitePegsOnly();		// Line 400
+		if (black + white == width)	fullWidth();			// Line 405
 		
 		this.results.push(new Array(black, white));
 		this.sendGuess = false
-		this.traversePossibilities(width-1);				// Line 416
+		this.traversePossibilities(width-1);				// Line 417
 		this.guesses.push(new Array);
 		for (var i = 0; i < width; i++) {
 			this.guesses[this.guesses.length-1][i] = this.newGuess[i]
@@ -392,18 +393,18 @@ function Code (width, colours)	{
 		function noPegs	()	{
 			for (var i = 0; i < width; i++) {
 				for (var j = 0; j < width; j++) {
-					skipColour[j][this.newGuess[i]] = true;
+					skipColour[j][self.newGuess[i]] = true;
 				}
 			}
 		}
 		function whitePegsOnly ()	{
 			for (var i = 0; i < width; i++) {
-				skipColour[i][this.newGuess[i]] = true;
+				skipColour[i][self.newGuess[i]] = true;
 			}
 		}
 		function fullWidth ()	{
 			for (var i = 0; i < colours; i++) {
-				if (this.newGuess.indexOf(i) < 0) {
+				if (self.newGuess.indexOf(i) < 0) {
 					for (var j = 0; j < width; j++) {
 						skipColour[j][i] = true;
 					}
@@ -422,9 +423,9 @@ function Code (width, colours)	{
 			}
 			if (skipColour[i][j]) continue;
 			this.newGuess[i] = j;
-			this.traversePossibilities(i-1);			// Line 416 (recursive)
+			this.traversePossibilities(i-1);			// Line 417 (recursive)
 			if (this.sendGuess) return;
-			this.checkResult(this.results.length-1);	// Line 433
+			this.checkResult(this.results.length-1);	// Line 434
 			if (this.sendGuess) return;
 		}
 	}
@@ -435,10 +436,10 @@ function Code (width, colours)	{
 			this.sendGuess = true;
 			return;
 		}
-		var testResult = this.evaluate(this.guesses[i], this.newGuess);						// Line 448
+		var testResult = this.evaluate(this.guesses[i], this.newGuess);						// Line 449
 		this.combosChecked++;
 		if ((testResult[0] == this.results[i][0]) && (testResult[1] == this.results[i][1])) {
-			this.checkResult(i-1);															// Line 433 (recursive)
+			this.checkResult(i-1);															// Line 434 (recursive)
 			return;
 		}
 		return;
