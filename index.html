@@ -39,18 +39,37 @@
 		<button id="submit-guess" type="button">Submit Guess</button>
 		<button id="submit-code" type="button">Submit Code</button>
 	</div>
+	<div id="site-use-modal" class="modal-window">
+		<div id="site-use-head">
+			<div id="site-use-title">
+				<h2>Welcome to codeBreaker</h2>
+			</div>
+			<button class="close-button">&times;</button>
+		</div>
+		<div id="site-use-body">
+			<p>If you've never played the classic board game Mastermind before, click the <span class="button-name">Game Instructions</span> button below to learn the rules.  Once you're familiar with the game, read these instructions to learn how to play on this page.</p>
+			<p>The main game controls are in the bar at the top of the window.  The menus on the left allow you to set the difficulty of the game by choosing the number of pegs in the combination and the number of available colours.  The classic version of the game is played with four pegs and six colours, so these are the default values.</p>
+			<p>When you're ready to play, choose a game mode with the buttons on the right.  To guess a code created by the game, click <span class="button-name">Start Game</span>.  To enter your own code and watch the algorithm solve it, click <span class="button-name">Enter Code</span>.  To review the game instructions at any time, click <span class="button-name">Instructions</span>.  Once you've started a game, the number of possible combinations that can be made from the number of pegs and colours chosen will be displayed below these buttons.</p>
+			<p>The playing surface is displayed at the bottom of the screen.  The bottom row shows all of the available colours in the game; click these to fill in your guess or your code in the row above.  This row will display the number of empty pegs chosen that was chosen for the game.  The currently selected peg is blinking.  When you select a colour from the bottom row, the blinking peg will fill with that colour and the next peg to the right will blink.  To fill in a different peg, simply click on it to select it.  To remove a colour, double click the peg.</p>
+			<p>When the selection row is filled in, the <span class="button-name">Submit Guess</span> or <span class="button-name">Submit Code</span>button will appear, depending on the game mode.  If your guess or code is ready, click to submit.</p>
+		</div>
+		<div id="site-use-footer">
+			<button id="show-instructions">Game Instructions</button>
+		</div>
+	</div>	<!-- end of site-use-modal -->
 	<div id="instruc-modal" class="modal-window">
 		<div id="instruc-head">
 			<div id="instruc-title">
-				<h2>Instructions</h2>
+				<h2>Game instructions</h2>
 			</div>
 			<button class="close-button">&times;</button>
 		</div>
 		<div id="instruc-body">
-			<p>The code is a sequence of colours.  Try to solve the code based on the results of each guess.</p>
-			<p>Choose the length of the code and the number of possible colours for each square from the menus in the upper left corner of your screen.  Then, click <span class="button-name">Start Game</span> to create the code and begin guessing.</p>
+			<p>codeBreaker is based on the classic board game Mastermind, in which one player creates a code and the other player tries to guess it.  After each guess, the player who created the code gives the guesser clues to help with their next guess.</p>
+			<p>The code is a sequence of colours.  In the original game, the code is made up of four coloured pegs of six possible colours.  In codeBreaker, you can increase the difficulty of the game by increasing the code size up to 16 pegs and the colour palette up to 12 colours.</p>
+			<p>Click <span class="button-name">Start Game</span> to create a new code and begin guessing.</p>
 			<p>Enter your guess by clicking the coloured squares in the row at the bottom of the screen.  Once the row above is filled, click <span class="button-name">Submit Guess</span> to find out how close you guess is to the solution.</p>
-			<p>Each guess you submit will be shown from the top of the screen, with the most <span class="emph">recent</span> guess shown <span class="emph">highest</span>.  For each <span class="emph">correct</span> colour in the <span class="emph">correct</span> spot in the sequence, a black box will be displayed to the left of your guess.  For each <span class="emph">correct</span> colour in the <span class="emph">incorrect</span> order, a white box will be displayed.</p>
+			<p>Each guess you submit will be scored by the game to give you clues for your next guess.  For each <span class="emph">correct</span> colour in the <span class="emph">correct</span> spot in the sequence, a small black circle will be displayed to the left of your guess.  For each <span class="emph">correct</span> colour in the <span class="emph">incorrect</span> order, a white circle will be displayed.  If none of the colours you selected are in the code, no circles will appear.  There is no significance to the order of the black and white circles.</p>
 		</div>
 	</div>	<!-- end of instruc-modal -->
 	<div id="win-game-modal" class="modal-window">
@@ -75,7 +94,6 @@
 		<div id="solve-body">
 			<p>The codeBreaker algorithm has solved the code in <span id="solve-guesses"></span> guesses.</p>
 			<p>There are <span id="solve-combos"></span> possible combinations.  The algorithm performed <span id="solve-checks"></span> checks.</p>
-		</div>
-	</div>	<!-- end of solve-code-modal -->
+		</div>	</div>	<!-- end of solve-code-modal -->
 </body>
 </html>
