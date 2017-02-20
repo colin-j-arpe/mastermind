@@ -37,6 +37,8 @@ $(document).ready(function () {
 // DOM referents
 	var widthMenu = 	$("#width-menu");
 	var colourMenu = 	$("#colour-menu");
+	var introModal =	$("#site-use-modal")[0];
+	var introButton =	$("#show-instructions");
 	var instModal = 	$("#instruc-modal")[0];
 	var instButton = 	$("#open-instructions");
 	var newButton = 	$("#new-game-button");
@@ -60,10 +62,16 @@ $(document).ready(function () {
 	}
 
 // Buttons
-	instButton.on("click", function () {
+	introButton.on("click", function () {
 		instModal.style.display = "block";
 	});
 	$(".close-button").eq(0).on("click", function () {
+		introModal.style.display = "none";
+	});
+	instButton.on("click", function () {
+		instModal.style.display = "block";
+	});
+	$(".close-button").eq(1).on("click", function () {
 		instModal.style.display = "none";
 	});
 
@@ -226,7 +234,7 @@ $(document).ready(function () {
 		$("#win-combos").text(totalCombinations(thisGame.width, thisGame.colours));		// Line 28
 		$("#win-guesses").text($(".prev-guess").length.toString());
 		winModal.style.display = "block";
-		$(".close-button").eq(1).on("click", function () {
+		$(".close-button").eq(2).on("click", function () {
 			winModal.style.display = "none";
 		});
 	}
@@ -279,7 +287,7 @@ $(document).ready(function () {
 		$("#solve-checks").text(thisCode.combosChecked.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 		$("#solve-combos").text(totalCombinations(thisCode.width, thisCode.colours));					// Line 28
 		solveModal.style.display = "block";
-		$(".close-button").eq(2).on("click", function () {
+		$(".close-button").eq(3).on("click", function () {
 			solveModal.style.display = "none";
 		});
 	}

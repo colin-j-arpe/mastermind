@@ -69,6 +69,13 @@ body {
     #previous-guesses .guess-results .white-peg-row {
       display: block; }
 
+#site-use-modal {
+  display: block;
+  height: 560px;
+  width: 640px;
+  margin-top: -280px;
+  margin-left: -320px; }
+
 .modal-window {
   display: none;
   position: fixed;
@@ -77,16 +84,16 @@ body {
   background-color: #F0DC82;
   padding: 0 12px;
   border: 2px solid #59260B; }
+  .modal-window .button-name {
+    font-weight: bold; }
+  .modal-window .emph {
+    font-style: italic; }
 
 #instruc-modal {
-  height: 350px;
+  height: 420px;
   width: 600px;
-  margin-top: -175px;
+  margin-top: -210px;
   margin-left: -300px; }
-  #instruc-modal .button-name {
-    font-weight: bold; }
-  #instruc-modal .emph {
-    font-style: italic; }
 
 #win-game-modal {
   height: 200px;

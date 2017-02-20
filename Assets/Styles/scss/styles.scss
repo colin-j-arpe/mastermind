@@ -1,7 +1,9 @@
 $fixed-bk: #F0DC82;
 $page-bk: #F5DEB3;
 $inst-bdr: #59260B;
-$inst-ht: 350px;
+$intro-ht:	560px;
+$intro-wd: 640px;
+$inst-ht: 420px;
 $inst-wd: 600px;
 $win-ht: 200px;
 $win-wd: 400px;
@@ -101,6 +103,14 @@ body	{
 	}
 }
 
+#site-use-modal	{
+	display: block;
+	height: $intro-ht;
+	width: $intro-wd;
+	margin-top: ($intro-ht/(-2));
+	margin-left: ($intro-wd/(-2));
+}
+
 .modal-window	{
 	display: none;
 	position: fixed;
@@ -109,13 +119,6 @@ body	{
 	background-color: $fixed-bk;
 	padding: 0 12px;
 	border: 2px solid $inst-bdr;
-}
-
-#instruc-modal	{
-	height: $inst-ht;
-	width: $inst-wd;
-	margin-top: ($inst-ht/(-2));
-	margin-left: ($inst-wd/(-2));
 
 	.button-name	{
 		font-weight: bold;
@@ -123,6 +126,13 @@ body	{
 	.emph	{
 		font-style: italic;
 	}
+}
+
+#instruc-modal	{
+	height: $inst-ht;
+	width: $inst-wd;
+	margin-top: ($inst-ht/(-2));
+	margin-left: ($inst-wd/(-2));
 }
 
 #win-game-modal	{
