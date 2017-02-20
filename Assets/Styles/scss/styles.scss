@@ -16,6 +16,7 @@ body	{
 	width: $peg-size;
 	height: $peg-size;
 	border: 4px solid $inst-bdr;
+	border-radius: 50%;
 	margin: 0 6px;
 }
 
@@ -27,6 +28,7 @@ body	{
 	width: ($peg-size * 0.4);
 	height: ($peg-size * 0.4);
 	border: 2px solid $inst-bdr;
+	border-radius: 50%;
 	margin: 0 4px;
 	display: inline-flex;
 }
@@ -124,6 +126,13 @@ body	{
 }
 
 #win-game-modal	{
+	height: $win-ht;
+	width: $win-wd;
+	margin-top: ($win-ht/(-2));
+	margin-left: ($win-wd/(-2));
+}
+
+#solve-code-modal	{
 	height: $win-ht;
 	width: $win-wd;
 	margin-top: ($win-ht/(-2));
