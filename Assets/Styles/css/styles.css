@@ -17,7 +17,7 @@ body {
   height: 14.4px;
   border: 2px solid #59260B;
   border-radius: 50%;
-  margin: 1px 4px;
+  margin: 0 4px;
   display: inline-flex; }
 
 .black-peg {
@@ -63,8 +63,7 @@ body {
       text-align: center;
       font-weight: bolder; }
   #previous-guesses .guess-results {
-    display: inline-block;
-    flex-direction: column; }
+    display: inline-flex; }
     #previous-guesses .guess-results .black-peg-row {
       display: block; }
     #previous-guesses .guess-results .white-peg-row {
@@ -90,6 +89,12 @@ body {
     font-style: italic; }
 
 #win-game-modal {
+  height: 200px;
+  width: 400px;
+  margin-top: -100px;
+  margin-left: -200px; }
+
+#solve-code-modal {
   height: 200px;
   width: 400px;
   margin-top: -100px;
