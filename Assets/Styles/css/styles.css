@@ -1,5 +1,9 @@
 body {
-  background-color: #F5DEB3; }
+  background-color: #F5DEB3;
+  background-repeat: none;
+  background-size: 120%;
+  background-blend-mode: normal;
+  /*background-position: right;*/ }
 
 .peg {
   display: inline-flex;
@@ -71,10 +75,16 @@ body {
 
 #site-use-modal {
   display: block;
-  height: 560px;
+  height: 620px;
   width: 640px;
-  margin-top: -280px;
+  margin-top: -310px;
   margin-left: -320px; }
+  #site-use-modal #site-use-logo {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 0; }
+  #site-use-modal #site-use-title {
+    margin-top: -10px; }
 
 .modal-window {
   display: none;
