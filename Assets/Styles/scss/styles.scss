@@ -11,10 +11,10 @@ $peg-size: 36px;
 
 body	{
 	background-color: $page-bk;
-	background-repeat: none;
-	background-size: 120%;
+	background-repeat: no-repeat;
+	background-size: 100%;
 	background-blend-mode: normal;
-	/*background-position: right;*/
+	background-position: 0% 20%;
 }
 
 .peg 	{
@@ -57,6 +57,13 @@ body	{
 
 #page-header	{
 	top: 0;
+
+	#combinations-message	{
+		font-size: 16px;
+		padding-left: 12px;
+		padding-top: 4px;
+		margin-bottom: 4px;
+	}
 }
 
 #page-footer	{

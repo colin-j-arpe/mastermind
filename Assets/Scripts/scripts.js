@@ -96,6 +96,7 @@ $(document).ready(function () {
 
 // Clear page and reset controls and DOM listeners
 	function resetPage (width, colours)	{
+		introModal.style.display = "none";
 		instModal.style.display = "none";
 		winModal.style.display = "none";
 		solveModal.style.display = "none";
